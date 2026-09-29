@@ -1,0 +1,1843 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Контрольная по множествам</title>
+<meta name="description" content="Контрольная: ∈, ⊆, ⊂, ∅, P(X), |X|. Варианты по seed, экспорт в LaTeX (условие и лист ответов), печать.">
+<style>
+:root{
+  --paper:#ffffff;
+  --text:#22252d;
+  --muted:#5f6576;
+  --rule:#dde0e8;
+  --rule-strong:#a3a9b8;
+  --accent:#34438b;
+  --on-accent:#ffffff;
+  --ok:#2c7a4b;
+  --err:#b53a2f;
+  --ok-bg:#e2f2e8;
+  --err-bg:#fbe4e1;
+  --warn-bg:#fdf1c9;
+  --tint:#f3f5fa;
+  --key-bg:#dfe5f0; --key-bg-hover:#cfd8ea; --key-border:#aab5cc;
+  --serif:"PT Serif",Georgia,"Times New Roman",serif;
+  --math:"STIX Two Math","Cambria Math","Latin Modern Math","PT Serif",Georgia,serif;
+  --mono:"PT Mono",ui-monospace,Menlo,Consolas,monospace;
+  box-sizing:border-box;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#16181d; --text:#e4e6ec; --muted:#9aa0b1;
+    --rule:#2d313c; --rule-strong:#565c6e; --accent:#a4b3f2; --on-accent:#141826;
+    --ok:#66c48b; --err:#f08172; --ok-bg:#1c3326; --err-bg:#3e2320; --warn-bg:#3a3321;
+    --tint:#1e2129; --key-bg:#2b3244; --key-bg-hover:#353e55; --key-border:#4b5670; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#16181d; --text:#e4e6ec; --muted:#9aa0b1;
+  --rule:#2d313c; --rule-strong:#565c6e; --accent:#a4b3f2; --on-accent:#141826;
+  --ok:#66c48b; --err:#f08172; --ok-bg:#1c3326; --err-bg:#3e2320; --warn-bg:#3a3321;
+  --tint:#1e2129; --key-bg:#2b3244; --key-bg-hover:#353e55; --key-border:#4b5670; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--paper);color:var(--text);font-family:var(--serif);font-size:1.0625rem;line-height:1.55;-webkit-text-size-adjust:100%}
+main{max-width:1080px;margin:0 auto;padding:2rem 1.5rem 4rem}
+@media (max-width:520px){main{padding:1.25rem 1rem 2.5rem}}
+h1{font-size:clamp(1.5rem,1.2rem + 1.3vw,2.05rem);line-height:1.2;margin:0 0 .4rem;text-wrap:balance}
+h2{font-size:1.1rem;margin:0}
+h3{font-size:1.02rem;margin:0}
+p{margin:0}
+.lead{color:var(--muted);max-width:68ch}
+.m{font-family:var(--math);font-size:1.08em;white-space:pre-wrap}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+
+.seg{display:inline-flex;flex-wrap:wrap;border:1.5px solid var(--rule-strong);border-radius:6px;overflow:hidden}
+.seg button{font:inherit;font-size:.9rem;min-width:44px;min-height:36px;padding:0 .75rem;border:0;background:transparent;color:var(--muted);cursor:pointer;white-space:nowrap}
+.seg button + button{border-left:1.5px solid var(--rule-strong)}
+.seg button:hover{color:var(--accent)}
+.seg button[aria-pressed="true"],.seg button[aria-selected="true"]{background:var(--accent);color:var(--on-accent)}
+.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:-3px}
+
+.btn{font:inherit;font-size:.97rem;min-height:40px;padding:.4rem 1rem;border-radius:6px;cursor:pointer;border:1.5px solid var(--accent);background:transparent;color:var(--accent)}
+.btn:hover{background:var(--tint)}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.quiet{border-color:var(--rule-strong);color:var(--muted)}
+.btn.sm{min-height:32px;padding:.15rem .7rem;font-size:.88rem}
+.btn[disabled]{opacity:.45;cursor:default}
+.btn:focus-visible,summary:focus-visible,.key:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+nav.modes{margin-top:1.4rem}
+.panel{margin-top:1.4rem}
+.layout{display:grid;gap:1.5rem;grid-template-columns:minmax(0,1fr)}
+@media (min-width:960px){.layout.side{grid-template-columns:minmax(0,1fr) 280px}}
+
+details.settings{border:1px solid var(--rule);border-radius:8px;padding:.6rem 1rem;background:var(--tint)}
+details.settings > summary{cursor:pointer;color:var(--accent)}
+.opts{display:flex;flex-wrap:wrap;gap:1rem 1.6rem;padding:.9rem 0 .3rem}
+.opt{display:grid;gap:.35rem;align-content:start}
+.opt > span,.label{color:var(--muted);font-size:.78rem;letter-spacing:.05em;text-transform:uppercase}
+.types{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.2rem 1rem;flex-basis:100%}
+.types label{display:flex;gap:.45rem;align-items:baseline;font-size:.95rem;cursor:pointer}
+input[type=text],input[type=number],input:not([type]){font:inherit;padding:.35rem .55rem;border:1.5px solid var(--rule-strong);border-radius:6px;background:var(--paper);color:var(--text);min-width:0}
+input.num{width:4.2rem;font-variant-numeric:tabular-nums}
+input.seed{width:9rem;font-family:var(--mono);font-size:.95rem}
+.row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+
+.task{border-top:2px solid var(--text);padding-top:.8rem;display:grid;gap:.7rem}
+.task + .task{margin-top:2rem}
+.task-head{display:flex;flex-wrap:wrap;gap:.3rem 1rem;align-items:baseline;justify-content:space-between}
+.task-meta{color:var(--muted);font-size:.85rem;font-family:var(--mono)}
+.prompt{max-width:70ch}
+.context{padding:.35rem .8rem;background:var(--tint);border-radius:6px;width:max-content;max-width:100%}
+
+ol.claims{list-style:none;margin:0;padding:0;display:grid;gap:.15rem}
+.claim{display:grid;grid-template-columns:2rem 1.6rem minmax(0,1fr) auto;align-items:center;gap:.1rem .5rem;padding:.3rem .5rem;border-radius:6px}
+.claim:hover{background:var(--tint)}
+.claim-n{color:var(--muted);font-variant-numeric:tabular-nums;text-align:right}
+.claim input{width:1.15rem;height:1.15rem;margin:0;accent-color:var(--accent);cursor:pointer}
+.claim label{cursor:pointer;overflow-wrap:anywhere}
+.claim .verdict{font-size:.82rem}
+.claim .fb{grid-column:3 / -1;font-size:.95rem}
+.claim.ok{background:var(--ok-bg)}
+.claim.bad{background:var(--err-bg)}
+.claim .fb p{margin:.25rem 0 .15rem;max-width:72ch}
+.claim .fb details summary{font-size:.85rem;width:max-content;color:var(--muted)}
+.claim .fb details p{color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:.4rem;padding:.1rem .6rem;border-radius:999px;border:1px solid var(--rule);background:var(--tint);color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pill.ok{color:var(--ok);border-color:currentColor;background:var(--ok-bg)}
+.pill.err{color:var(--err);border-color:currentColor;background:var(--err-bg)}
+.tag{display:inline-block;font-size:.8rem;padding:0 .5rem;border-radius:4px;background:var(--warn-bg);color:var(--text);margin-left:.2rem}
+
+ol.cards{margin:0;padding:0;list-style:none;display:grid;gap:.35rem}
+.cardrow{display:grid;grid-template-columns:2rem auto 5rem auto;gap:.2rem .6rem;align-items:center;padding:.25rem .5rem;border-radius:6px}
+.cardrow .fb{grid-column:2 / -1;font-size:.95rem}
+.cardrow.ok{background:var(--ok-bg)}
+.cardrow.bad{background:var(--err-bg)}
+@media (max-width:520px){.cardrow{grid-template-columns:1.6rem minmax(0,1fr) 4rem}.cardrow .verdict{grid-column:2 / -1}}
+
+.keys{display:flex;flex-wrap:wrap;gap:.35rem}
+.key{font-family:var(--math);font-size:1.08rem;min-width:44px;min-height:40px;padding:0 .5rem;border:1.5px solid var(--key-border);border-radius:6px;background:var(--key-bg);color:var(--text);cursor:pointer}
+.key:hover{background:var(--key-bg-hover);border-color:var(--accent);color:var(--accent)}
+.bigin{width:100%;font-family:var(--math)!important;font-size:1.2rem!important;padding:.45rem .7rem!important}
+.preview{min-height:1.5em;font-size:.95rem;color:var(--muted)}
+.preview.err{color:var(--err)}
+.caret{font-family:var(--mono);font-size:.95rem;color:var(--text);white-space:pre;overflow-x:auto;margin:.2rem 0 0;padding:.3rem .5rem;background:var(--tint);border-radius:4px}
+.caret b{color:var(--err)}
+.report{display:grid;gap:.45rem;padding:.7rem .9rem;border-radius:6px;border:1px solid var(--rule);background:var(--tint)}
+.report.ok{border-color:var(--ok);background:var(--ok-bg)}
+.report ul{margin:0;padding-left:1.2rem}
+.report li{margin:.1rem 0}
+
+.task-summary:empty{display:none}
+.task-summary{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.actions{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.hint{color:var(--muted);font-size:.88rem;max-width:80ch}
+
+aside.stats{display:grid;gap:1rem;align-content:start}
+@media (min-width:960px){aside.stats{position:sticky;top:calc(1rem + env(safe-area-inset-top,0px))}}
+.statbox{border:1px solid var(--rule);border-radius:8px;padding:.8rem 1rem;display:grid;gap:.5rem}
+.nums{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.4rem .8rem}
+.nums div{display:grid}
+.nums b{font-size:1.5rem;font-variant-numeric:tabular-nums;line-height:1.1}
+.nums span{font-size:.8rem;color:var(--muted)}
+ul.taglist{list-style:none;margin:0;padding:0;display:grid;gap:.35rem;font-size:.9rem}
+.taglist li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.1rem .5rem}
+.taglist .bar{grid-column:1 / -1;height:4px;border-radius:2px;background:var(--rule)}
+.taglist .bar i{display:block;height:100%;border-radius:2px;background:var(--err)}
+.taglist .cnt{font-variant-numeric:tabular-nums;color:var(--err)}
+.summary{border:1.5px solid var(--accent);border-radius:8px;padding:1rem 1.1rem;display:grid;gap:.6rem}
+.summary ul{margin:0;padding-left:1.2rem;display:grid;gap:.4rem}
+.summary .adv{color:var(--muted);font-size:.93rem}
+
+.calc-out{padding:.8rem 1rem;border-radius:6px;border:1px solid var(--rule);background:var(--tint);display:grid;gap:.4rem}
+.calc-out.ok{background:var(--ok-bg);border-color:var(--ok)}
+.calc-out.bad{background:var(--err-bg);border-color:var(--err)}
+.help{font-size:.95rem;display:grid;gap:.6rem}
+.help table{border-collapse:collapse}
+.help td,.help th{padding:.25rem .9rem .25rem 0;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
+.help th{font-weight:400;color:var(--muted)}
+.help code,code{font-family:var(--mono);font-size:.88rem;background:var(--tint);padding:.05rem .3rem;border-radius:4px;white-space:nowrap}
+.wrap-x{overflow-x:auto}
+
+footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--rule);display:grid;gap:.8rem;font-size:.9rem;color:var(--muted)}
+.selftest{display:grid;gap:.4rem}
+.selftest ol{margin:0;padding-left:1.4rem;font-family:var(--mono);font-size:.82rem;max-height:22rem;overflow:auto}
+.selftest .fail{color:var(--err)}
+.selftest .pass{color:var(--ok)}
+
+dialog{border:1px solid var(--rule-strong);border-radius:10px;background:var(--paper);color:var(--text);width:min(900px,calc(100vw - 2rem));max-height:calc(100vh - 2rem);padding:1rem 1.2rem}
+dialog::backdrop{background:rgba(10,14,30,.45)}
+dialog textarea{width:100%;height:18rem;font-family:var(--mono);font-size:.82rem;border:1px solid var(--rule-strong);border-radius:6px;background:var(--tint);color:var(--text);padding:.5rem}
+dialog .grid{display:grid;gap:.6rem}
+
+.print-only{display:none}
+@media print{
+  :root{--paper:#fff;--text:#000;--muted:#333;--tint:#fff;--ok-bg:#fff;--err-bg:#fff}
+  body{font-size:11pt}
+  nav,details.settings,aside,footer,.actions,.keys,.preview,.hint,.task-summary,.claim .fb,.cardrow .fb,.report,.noprint{display:none!important}
+  .print-only{display:block}
+  .layout{display:block}
+  .task{break-inside:avoid;border-top:1px solid #000}
+  .claim,.cardrow{background:none!important}
+  .claim input{appearance:none;-webkit-appearance:none;border:1px solid #000;width:.9rem;height:.9rem}
+  .claim input:checked{background:none}
+  .cardrow input,.bigin{border:0;border-bottom:1px solid #000;border-radius:0;color:transparent}
+}
+@media (prefers-reduced-motion:no-preference){.claim,.cardrow{transition:background-color .15s}}
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <div>
+      <h1>Контрольная: элементы, подмножества, P(X), |X|</h1>
+    </div>
+    <div class="seg" role="group" aria-label="Тема оформления" id="theme">
+      <button type="button" data-theme-set="auto">Авто</button>
+      <button type="button" data-theme-set="light">Светлая</button>
+      <button type="button" data-theme-set="dark">Тёмная</button>
+    </div>
+  </div>
+
+  <details class="settings panel" id="settings" open>
+    <summary>Параметры генератора</summary>
+    <div class="opts">
+      <div class="opt" style="flex-basis:100%"><span>Типы задач</span><div class="types" id="types"></div></div>
+      <div class="opt"><span>Сложность</span><div class="seg" id="level" role="group" aria-label="Сложность">
+        <button type="button" data-level="easy">Легко</button>
+        <button type="button" data-level="medium">Средне</button>
+        <button type="button" data-level="hard">Сложно</button>
+      </div></div>
+      <div class="opt"><span>Утверждений в блоке</span><div class="row">
+        <label class="row">от <input class="num" type="number" id="nmin" min="4" max="12"></label>
+        <label class="row">до <input class="num" type="number" id="nmax" min="4" max="12"></label>
+      </div></div>
+      <div class="opt"><span>Seed варианта</span><div class="row">
+        <input class="seed" type="text" id="seed" spellcheck="false" autocomplete="off" aria-label="Seed">
+        <button type="button" class="btn sm quiet" id="seed-new">Новый</button>
+      </div></div>
+      <div class="opt" id="opt-count"><span>Заданий в контрольной</span><input class="num" type="number" id="ccount" min="1" max="20"></div>
+    </div>
+    <p class="hint">Один и тот же seed при тех же параметрах всегда даёт тот же вариант: его можно вписать в контрольную или продиктовать группе.</p>
+  </details>
+
+  <!-- Контрольная -->
+  <section class="panel" id="mode-control">
+    <div class="actions noprint">
+      <button type="button" class="btn" id="ctl-new">Собрать вариант</button>
+      <button type="button" class="btn quiet" id="ctl-tex">Экспорт в LaTeX</button>
+      <button type="button" class="btn quiet" id="ctl-print">Печать</button>
+    </div>
+    <p class="print-only" id="ctl-print-head"></p>
+    <div id="ctl-list" style="margin-top:1.2rem"></div>
+    <div class="actions" style="margin-top:1.4rem">
+      <button type="button" class="btn primary" id="ctl-submit">Сдать и проверить</button>
+    </div>
+    <div id="ctl-result" class="panel" hidden></div>
+  </section>
+
+  <footer>
+    <div class="row">
+      <button type="button" class="btn sm quiet" id="selftest-run">Самопроверка</button>
+      <span>Автотесты ядра и генератора: эталоны из книги и свойства (A = B ⇔ A ⊆ B и B ⊆ A; ∅ ⊆ X; |P(X)| = 2<sup>|X|</sup>; x ≠ {x}). Из консоли: <code>SetCore.selfTest()</code>.</span>
+    </div>
+    <div class="selftest" id="selftest-out" hidden></div>
+  </footer>
+</main>
+
+<dialog id="tex-dialog" aria-labelledby="tex-h">
+  <div class="grid">
+    <div class="row" style="justify-content:space-between"><h2 id="tex-h">Экспорт в LaTeX</h2><button type="button" class="btn sm quiet" id="tex-close">Закрыть</button></div>
+    <p class="hint">Верные пункты помечены <code>\item[v]</code>. В условии пометка не видна, в листе ответов она превращается в галочку, поэтому пункты можно переставлять вручную. Оба файла различаются одной строкой: <code>\answersfalse</code> / <code>\answerstrue</code>.</p>
+    <div class="seg" role="tablist" id="tex-tabs"><button type="button" data-tex="q" aria-selected="true">Условие</button><button type="button" data-tex="a" aria-selected="false">Лист ответов</button></div>
+    <textarea id="tex-text" readonly spellcheck="false" aria-label="Код LaTeX"></textarea>
+    <div class="row"><button type="button" class="btn sm" id="tex-copy">Копировать</button><button type="button" class="btn sm" id="tex-dl">Скачать .tex</button><span class="hint" id="tex-msg"></span></div>
+  </div>
+</dialog>
+
+<!-- ===================== ЯДРО ===================== -->
+<script id="set-core">
+(function (root) {
+'use strict';
+
+/* ---------- Отношения и теги ошибок ---------- */
+var REL = {
+  in:    { sym: '∈', tex: '\\in',        pos: 'in',   neg: false },
+  notin: { sym: '∉', tex: '\\notin',     pos: 'in',   neg: true  },
+  sub:   { sym: '⊆', tex: '\\subseteq',  pos: 'sub',  neg: false },
+  nsub:  { sym: '⊈', tex: '\\nsubseteq', pos: 'sub',  neg: true  },
+  psub:  { sym: '⊂', tex: '\\subset',    pos: 'psub', neg: false },
+  eq:    { sym: '=', tex: '=',           pos: 'eq',   neg: false },
+  neq:   { sym: '≠', tex: '\\neq',       pos: 'eq',   neg: true  }
+};
+var TAGS = {
+  in_sub:      { label: 'спутал ∈ и ⊆', hint: 'x ∈ A: x — один из элементов A. B ⊆ A: каждый элемент B является элементом A.' },
+  x_sx:        { label: 'спутал x и {x}', hint: 'x и {x} — разные объекты: {x} — множество, единственный элемент которого x.' },
+  empty_set:   { label: 'спутал ∅ и {∅}', hint: 'У ∅ нет элементов, а у {∅} ровно один элемент — ∅.' },
+  repeat:      { label: 'считает, что повтор меняет множество', hint: 'Множество определяется только своими элементами: {a, b, b} = {b, a}.' },
+  empty_sub:   { label: 'забыл, что ∅ ⊆ X для любого X', hint: 'У ∅ нет элементов, поэтому условие «каждый элемент ∅ лежит в X» выполнено всегда.' },
+  sub_psub:    { label: 'спутал ⊆ и ⊂', hint: 'X ⊆ X верно всегда, а X ⊂ X — никогда: собственное подмножество отличается от множества.' },
+  nested_card: { label: 'посчитал элементы вложенного множества в мощности', hint: '|{1, {2, 3}}| = 2: {2, 3} — один элемент, его собственные элементы не считаются.' },
+  other:       { label: 'прочие ошибки', hint: '' }
+};
+
+function SetError(message) { this.name = 'SetError'; this.message = message; }
+SetError.prototype = Object.create(Error.prototype);
+function ParseError(message, pos) { this.name = 'ParseError'; this.message = message; this.pos = pos; }
+ParseError.prototype = Object.create(Error.prototype);
+
+/* ---------- Термы ----------
+   сырой терм: {t:'u',v} | {t:'s',els} | {t:'var',name} | {t:'P',arg} | {t:'card',arg}
+   значение (канонический вид): {t:'u',v} | {t:'s',els} — els отсортированы, без повторов */
+function isNum(s) { return /^\d+$/.test(s); }
+function cmpUr(a, b) {
+  var na = isNum(a), nb = isNum(b);
+  if (na && nb) { var d = Number(a) - Number(b); if (d) return d; }
+  else if (na) return -1;
+  else if (nb) return 1;
+  return a < b ? -1 : a > b ? 1 : 0;
+}
+// фиксированный порядок: числа, буквы, затем множества по числу элементов и поэлементно
+function cmp(x, y) {
+  if (x.t === 'u' && y.t === 'u') return cmpUr(x.v, y.v);
+  if (x.t === 'u') return -1;
+  if (y.t === 'u') return 1;
+  if (x.els.length !== y.els.length) return x.els.length - y.els.length;
+  for (var i = 0; i < x.els.length; i++) { var c = cmp(x.els[i], y.els[i]); if (c) return c; }
+  return 0;
+}
+function eqv(x, y) { return cmp(x, y) === 0; }
+function canonSet(vals) {
+  var a = vals.slice().sort(cmp), out = [];
+  for (var i = 0; i < a.length; i++) if (!out.length || cmp(out[out.length - 1], a[i]) !== 0) out.push(a[i]);
+  return { t: 's', els: out };
+}
+function has(Y, x) { for (var i = 0; i < Y.els.length; i++) if (eqv(Y.els[i], x)) return true; return false; }
+
+function value(raw, env, depth) {
+  depth = depth || 0;
+  if (depth > 60) throw new SetError('Слишком глубокая вложенность или циклическое определение.');
+  switch (raw.t) {
+    case 'u': return { t: 'u', v: raw.v };
+    case 's': return canonSet(raw.els.map(function (e) { return value(e, env, depth + 1); }));
+    case 'var':
+      if (!env || !Object.prototype.hasOwnProperty.call(env, raw.name)) throw new SetError('Множество ' + raw.name + ' не задано.');
+      return value(env[raw.name], env, depth + 1);
+    case 'P': {
+      var X = value(raw.arg, env, depth + 1);
+      if (X.t !== 's') throw new SetError('P(' + fmtRaw(raw.arg) + ') не определено: ' + fmtRaw(raw.arg) + ' — урэлемент, а не множество.');
+      return powerset(X);
+    }
+    case 'card': {
+      var Y = value(raw.arg, env, depth + 1);
+      if (Y.t !== 's') throw new SetError('|' + fmtRaw(raw.arg) + '| не определено: ' + fmtRaw(raw.arg) + ' — урэлемент, а не множество.');
+      return { t: 'u', v: String(Y.els.length) };
+    }
+  }
+  throw new SetError('Неизвестный терм.');
+}
+function powerset(X) {
+  var n = X.els.length;
+  if (n > 12) throw new SetError('Множество слишком велико для явного построения P(X).');
+  var out = [];
+  for (var m = 0; m < (1 << n); m++) {
+    var sub = [];
+    for (var i = 0; i < n; i++) if (m & (1 << i)) sub.push(X.els[i]);
+    out.push(canonSet(sub));
+  }
+  return canonSet(out);
+}
+
+/* ---------- Запись ---------- */
+function fmtRaw(r) {
+  switch (r.t) {
+    case 'u': return r.v;
+    case 's': return r.els.length ? '{' + r.els.map(fmtRaw).join(', ') + '}' : '∅';
+    case 'var': return r.name;
+    case 'P': return 'P(' + fmtRaw(r.arg) + ')';
+    case 'card': return '|' + fmtRaw(r.arg) + '|';
+  }
+  return '?';
+}
+var fmtVal = fmtRaw;
+function texRaw(r) {
+  switch (r.t) {
+    case 'u': return r.v;
+    case 's': return r.els.length ? '\\{' + r.els.map(texRaw).join(', ') + '\\}' : '\\varnothing';
+    case 'var': return r.name;
+    case 'P': return 'P(' + texRaw(r.arg) + ')';
+    case 'card': return '|' + texRaw(r.arg) + '|';
+  }
+  return '?';
+}
+function fmtStmt(st) {
+  if (st.kind === 'sg') return fmtRaw(st.term) + ' — синглетон';
+  return fmtRaw(st.lhs) + ' ' + REL[st.rel].sym + ' ' + fmtRaw(st.rhs);
+}
+function texStmt(st) {
+  if (st.kind === 'sg') return '$' + texRaw(st.term) + '$';
+  return '$' + texRaw(st.lhs) + ' ' + REL[st.rel].tex + ' ' + texRaw(st.rhs) + '$';
+}
+function depthRaw(r, env) {
+  switch (r.t) {
+    case 'u': return 0;
+    case 's': return 1 + r.els.reduce(function (m, e) { return Math.max(m, depthRaw(e, env)); }, 0);
+    case 'var': return env && env[r.name] ? depthRaw(env[r.name], env) : 0;
+    case 'P': return depthRaw(r.arg, env) + 1;
+    case 'card': return depthRaw(r.arg, env);
+  }
+  return 0;
+}
+function depthStmt(st, env) {
+  if (st.kind === 'sg') return depthRaw(st.term, env);
+  return Math.max(depthRaw(st.lhs, env), depthRaw(st.rhs, env));
+}
+function canonKey(st, env) {
+  if (st.kind === 'sg') return 'sg:' + fmtVal(value(st.term, env));
+  return fmtVal(value(st.lhs, env)) + ' ' + st.rel + ' ' + fmtVal(value(st.rhs, env));
+}
+function listEls(V) { return V.els.map(fmtVal).join(', '); }
+function plural(n, one, few, many) {
+  var m10 = n % 10, m100 = n % 100;
+  if (m10 === 1 && m100 !== 11) return one;
+  if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few;
+  return many;
+}
+function elWord(n) { return plural(n, 'элемент', 'элемента', 'элементов'); }
+// есть ли в записи повторы (на любом уровне)
+function hasRawDup(raw, env) {
+  if (raw.t !== 's') return false;
+  try {
+    if (canonSet(raw.els.map(function (e) { return value(e, env); })).els.length < raw.els.length) return true;
+  } catch (e) { return false; }
+  return raw.els.some(function (e) { return hasRawDup(e, env); });
+}
+
+/* ---------- Парсер ---------- */
+var KW = { in: 'in', notin: 'notin', sub: 'sub', subeq: 'sub', nsub: 'nsub', notsub: 'nsub', psub: 'psub', eq: 'eq', neq: 'neq' };
+var SYMREL = { '∈': 'in', '∉': 'notin', '⊆': 'sub', '⊈': 'nsub', '⊂': 'psub', '⊊': 'psub', '=': 'eq', '≠': 'neq' };
+function tokenize(src) {
+  var toks = [], i = 0;
+  while (i < src.length) {
+    var c = src[i];
+    if (/\s/.test(c)) { i++; continue; }
+    if ('{}(),|'.indexOf(c) >= 0) { toks.push({ type: c, pos: i }); i++; continue; }
+    if (c === '∅' || c === 'Ø' || c === 'ø' || c === '⌀') { toks.push({ type: 'empty', pos: i }); i++; continue; }
+    if (SYMREL[c]) { toks.push({ type: 'rel', rel: SYMREL[c], pos: i }); i++; continue; }
+    if (c === '!' && src[i + 1] === '=') { toks.push({ type: 'rel', rel: 'neq', pos: i }); i += 2; continue; }
+    if (c === '℘') { toks.push({ type: 'P', pos: i }); i++; continue; }
+    var j;
+    if (/[0-9]/.test(c)) {
+      j = i; while (j < src.length && /[0-9]/.test(src[j])) j++;
+      var num = src.slice(i, j);
+      toks.push(num === '0' ? { type: 'empty', pos: i } : { type: 'ur', v: num, pos: i });
+      i = j; continue;
+    }
+    if (/[A-Za-z]/.test(c)) {
+      j = i; while (j < src.length && /[A-Za-z]/.test(src[j])) j++;
+      var w = src.slice(i, j);
+      if (KW[w]) toks.push({ type: 'rel', rel: KW[w], pos: i, word: w });
+      else if (w === 'empty') toks.push({ type: 'empty', pos: i });
+      else if (w === 'P') toks.push({ type: 'P', pos: i });
+      else if (w.length === 1 && /[a-z]/.test(w)) toks.push({ type: 'ur', v: w, pos: i });
+      else if (w.length === 1) toks.push({ type: 'var', name: w, pos: i });
+      else if (/^[a-z]+$/.test(w)) throw new ParseError('Неизвестное обозначение «' + w + '» в позиции ' + (i + 1) + '. Урэлемент — одна буква; если это несколько элементов, разделите их запятыми.', i);
+      else throw new ParseError('Неизвестное обозначение «' + w + '» в позиции ' + (i + 1) + '. Имя множества — одна заглавная буква.', i);
+      i = j; continue;
+    }
+    throw new ParseError('Неизвестный символ «' + c + '» в позиции ' + (i + 1) + '.', i);
+  }
+  toks.push({ type: 'eof', pos: src.length });
+  return toks;
+}
+function tokText(t) {
+  if (t.type === 'rel') return t.word || REL[t.rel].sym;
+  if (t.type === 'ur') return t.v;
+  if (t.type === 'var') return t.name;
+  if (t.type === 'empty') return '∅';
+  return t.type;
+}
+function Parser(src) { this.src = src; this.toks = tokenize(src); this.i = 0; }
+Parser.prototype.peek = function () { return this.toks[this.i]; };
+Parser.prototype.next = function () { return this.toks[this.i++]; };
+Parser.prototype.term = function () {
+  var tk = this.next(), p;
+  switch (tk.type) {
+    case 'ur': return { t: 'u', v: tk.v };
+    case 'empty': return { t: 's', els: [] };
+    case 'var': return { t: 'var', name: tk.name };
+    case 'P':
+      if (this.peek().type !== '(') return { t: 'var', name: 'P' };
+      var open = this.next();
+      if (this.peek().type === ')') throw new ParseError('Пустые скобки в позиции ' + (open.pos + 1) + ': внутри P( ) должно стоять множество.', open.pos);
+      var arg = this.term(), cl = this.next();
+      if (cl.type === 'eof') throw new ParseError('Незакрытая скобка «(» (позиция ' + (open.pos + 1) + '): не хватает «)».', open.pos);
+      if (cl.type !== ')') throw new ParseError('В позиции ' + (cl.pos + 1) + ' ожидалась «)», а стоит «' + tokText(cl) + '».', cl.pos);
+      return { t: 'P', arg: arg };
+    case '|':
+      if (this.peek().type === '|') throw new ParseError('Пустые палочки в позиции ' + (tk.pos + 1) + ': внутри | | должно стоять множество.', tk.pos);
+      var a = this.term(), c2 = this.next();
+      if (c2.type === 'eof') throw new ParseError('Не хватает закрывающей «|» (открыта в позиции ' + (tk.pos + 1) + ').', tk.pos);
+      if (c2.type !== '|') throw new ParseError('В позиции ' + (c2.pos + 1) + ' ожидалась «|», а стоит «' + tokText(c2) + '».', c2.pos);
+      return { t: 'card', arg: a };
+    case '{':
+      if (this.peek().type === '}') { this.next(); return { t: 's', els: [] }; }
+      var els = [];
+      for (;;) {
+        p = this.peek();
+        if (p.type === ',' || p.type === '}') {
+          var prev = this.toks[this.i - 1].type;
+          throw new ParseError('Пустой элемент в позиции ' + (p.pos + 1) + ': между «' + prev + '» и «' + p.type + '» ничего нет.', p.pos);
+        }
+        if (p.type === 'eof') throw new ParseError('Незакрытая скобка «{» (позиция ' + (tk.pos + 1) + '): не хватает «}».', tk.pos);
+        els.push(this.term());
+        var sep = this.next();
+        if (sep.type === ',') continue;
+        if (sep.type === '}') return { t: 's', els: els };
+        if (sep.type === 'eof') throw new ParseError('Незакрытая скобка «{» (позиция ' + (tk.pos + 1) + '): не хватает «}».', tk.pos);
+        throw new ParseError('В позиции ' + (sep.pos + 1) + ' ожидалась «,» или «}», а стоит «' + tokText(sep) + '».', sep.pos);
+      }
+    case '}': throw new ParseError('Лишняя закрывающая скобка «}» в позиции ' + (tk.pos + 1) + '.', tk.pos);
+    case ')': throw new ParseError('Лишняя закрывающая скобка «)» в позиции ' + (tk.pos + 1) + '.', tk.pos);
+    case ',': throw new ParseError('Лишняя запятая в позиции ' + (tk.pos + 1) + '.', tk.pos);
+    case '(': throw new ParseError('Скобка «(» в позиции ' + (tk.pos + 1) + ' без P: множества записываются в фигурных скобках.', tk.pos);
+    case 'rel': throw new ParseError('В позиции ' + (tk.pos + 1) + ' ожидался элемент или множество, а стоит «' + tokText(tk) + '».', tk.pos);
+    case 'eof':
+      if (tk.pos === 0 || !this.src.trim()) throw new ParseError('Пустой ввод.', 0);
+      throw new ParseError('Запись обрывается в позиции ' + (tk.pos + 1) + ': ожидался элемент или множество.', tk.pos);
+  }
+  throw new ParseError('Не удалось разобрать позицию ' + (tk.pos + 1) + '.', tk.pos);
+};
+Parser.prototype.end = function (what) {
+  var t = this.next();
+  if (t.type === 'eof') return;
+  if (t.type === '}' || t.type === ')') throw new ParseError('Лишняя закрывающая скобка «' + t.type + '» в позиции ' + (t.pos + 1) + '.', t.pos);
+  throw new ParseError('Лишние символы после конца ' + what + ' в позиции ' + (t.pos + 1) + ': «' + tokText(t) + '».', t.pos);
+};
+function wrap(fn) {
+  try { return { ok: true, value: fn() }; }
+  catch (e) {
+    if (e instanceof ParseError) return { ok: false, error: { message: e.message, pos: e.pos } };
+    throw e;
+  }
+}
+function parseTerm(src) { return wrap(function () { var p = new Parser(src); var t = p.term(); p.end('записи'); return t; }); }
+function parseStatement(src) {
+  return wrap(function () {
+    var p = new Parser(src);
+    var lhs = p.term(), r = p.next();
+    if (r.type === 'eof') throw new ParseError('Не хватает отношения (∈, ⊆, ⊂, = …) после «' + fmtRaw(lhs) + '».', r.pos);
+    if (r.type !== 'rel') throw new ParseError('В позиции ' + (r.pos + 1) + ' ожидалось отношение (∈, ⊆, ⊂, = …), а стоит «' + tokText(r) + '».', r.pos);
+    var rhs = p.term(); p.end('утверждения');
+    return { kind: 'rel', lhs: lhs, rel: r.rel, rhs: rhs };
+  });
+}
+// утверждение, если в записи есть отношение, иначе терм
+function parseAny(src) {
+  var toks;
+  try { toks = tokenize(src); } catch (e) { if (e instanceof ParseError) return { ok: false, error: { message: e.message, pos: e.pos } }; throw e; }
+  var isStmt = toks.some(function (t) { return t.type === 'rel'; });
+  var r = isStmt ? parseStatement(src) : parseTerm(src);
+  if (r.ok) r.kind = isStmt ? 'stmt' : 'term';
+  return r;
+}
+// «A = {a, {b}}; B = {a}»
+function parseDefs(src) {
+  var env = {}, offset = 0, parts = src.split(/[;\n]/);
+  for (var k = 0; k < parts.length; k++) {
+    var line = parts[k], start = offset; offset += line.length + 1;
+    if (!line.trim()) continue;
+    var m = /^\s*([A-Z])\s*=\s*/.exec(line);
+    if (!m) return { ok: false, error: { message: 'Определение должно иметь вид «A = {…}»: «' + line.trim() + '».', pos: start } };
+    if (m[1] === 'P') return { ok: false, error: { message: 'Имя P занято: P(X) — множество подмножеств.', pos: start } };
+    var r = parseTerm(line.slice(m[0].length));
+    if (!r.ok) return { ok: false, error: { message: m[1] + ': ' + r.error.message, pos: start + m[0].length + r.error.pos } };
+    env[m[1]] = r.value;
+  }
+  for (var name in env) {
+    try { value(env[name], env); } catch (e) { if (e instanceof SetError) return { ok: false, error: { message: name + ': ' + e.message, pos: 0 } }; throw e; }
+  }
+  return { ok: true, value: env };
+}
+function stmt(src) { var r = parseStatement(src); if (!r.ok) throw new Error(src + ': ' + r.error.message); return r.value; }
+function term(src) { var r = parseTerm(src); if (!r.ok) throw new Error(src + ': ' + r.error.message); return r.value; }
+
+/* ---------- Вычисление со свидетелями ---------- */
+// элемент Y, который отличается от x ровно «скобками»: {x} ∈ Y или x = {e}
+function nearMiss(x, Y) {
+  for (var i = 0; i < Y.els.length; i++) {
+    var e = Y.els[i];
+    if (e.t === 's' && e.els.length === 1 && eqv(e.els[0], x)) return e;
+    if (x.t === 's' && x.els.length === 1 && eqv(x.els[0], e)) return e;
+  }
+  return null;
+}
+function member(x, Y) {
+  for (var i = 0; i < Y.els.length; i++) if (eqv(Y.els[i], x)) return { value: true, el: Y.els[i] };
+  return { value: false, near: nearMiss(x, Y) };
+}
+function subset(X, Y) {
+  for (var i = 0; i < X.els.length; i++) if (!has(Y, X.els[i])) return { value: false, el: X.els[i], near: nearMiss(X.els[i], Y) };
+  return { value: true, empty: X.els.length === 0 };
+}
+function diff(X, Y) {
+  if (X.t === 'u' && Y.t === 'u') return { kind: 'urs' };
+  if (X.t !== Y.t) return { kind: 'types' };
+  for (var i = 0; i < X.els.length; i++) if (!has(Y, X.els[i])) return { kind: 'left', el: X.els[i] };
+  for (var j = 0; j < Y.els.length; j++) if (!has(X, Y.els[j])) return { kind: 'right', el: Y.els[j] };
+  return null;
+}
+function equal(X, Y) {
+  if (eqv(X, Y)) return { value: true };
+  var d = diff(X, Y); d.value = false; return d;
+}
+function psubset(X, Y) {
+  var s = subset(X, Y);
+  if (!s.value) return { value: false, kind: 'notsub', el: s.el, near: s.near };
+  if (eqv(X, Y)) return { value: false, kind: 'equal' };
+  return { value: true, kind: 'proper', el: diff(X, Y).el };
+}
+function evalStmt(st, env) {
+  if (st.kind === 'sg') {
+    var v = value(st.term, env);
+    if (v.t !== 's') return { value: false, v: v };
+    return { value: v.els.length === 1, v: v };
+  }
+  var rel = REL[st.rel], L = value(st.lhs, env), R = value(st.rhs, env), w;
+  if (rel.pos === 'in') {
+    if (R.t !== 's') throw new SetError(fmtRaw(st.rhs) + ' — урэлемент, а не множество: у урэлемента нет элементов, поэтому «' + fmtStmt(st) + '» не имеет смысла.');
+    w = member(L, R);
+  } else if (rel.pos === 'eq') {
+    w = equal(L, R);
+  } else {
+    if (L.t !== 's') throw new SetError(fmtRaw(st.lhs) + ' — урэлемент, а не множество; ' + rel.sym + ' связывает только множества. Возможно, имелось в виду ' + fmtRaw(st.lhs) + ' ' + (rel.neg ? '∉' : '∈') + ' ' + fmtRaw(st.rhs) + '.');
+    if (R.t !== 's') throw new SetError(fmtRaw(st.rhs) + ' — урэлемент, а не множество; ' + rel.sym + ' связывает только множества.');
+    w = rel.pos === 'sub' ? subset(L, R) : psubset(L, R);
+  }
+  return { value: rel.neg ? !w.value : w.value, w: w, L: L, R: R };
+}
+
+/* ---------- Объяснения (строятся по свидетелю) ---------- */
+function yes(b) { return b ? 'верно' : 'неверно'; }
+function defNote(raw, V, env, o) {
+  if (!o.def) return '';
+  if (raw.t === 'var' && env && env[raw.name]) return ' (' + raw.name + ' = ' + fmtRaw(env[raw.name]) + ')';
+  if (raw.t === 'P') return ' (' + fmtRaw(raw) + ' = ' + fmtVal(V) + ')';
+  return '';
+}
+function neqReason(x, e) {
+  if (x.t === 'u' && e.t === 'u') return x.v + ' и ' + e.v + ' — разные урэлементы';
+  if (x.t === 'u') return fmtVal(x) + ' — урэлемент, а ' + fmtVal(e) + ' — множество';
+  if (e.t === 'u') return fmtVal(x) + ' — множество, а ' + fmtVal(e) + ' — урэлемент';
+  var d = diff(x, e);
+  if (d.kind === 'left') return fmtVal(d.el) + ' ∈ ' + fmtVal(x) + ', но ' + fmtVal(d.el) + ' ∉ ' + fmtVal(e);
+  return fmtVal(d.el) + ' ∈ ' + fmtVal(e) + ', но ' + fmtVal(d.el) + ' ∉ ' + fmtVal(x);
+}
+function nearNote(x, Y, o) {
+  if (!o.near) return '';
+  var e = nearMiss(x, Y);
+  if (!e) return '';
+  return ' Среди элементов есть ' + fmtVal(e) + ', но ' + fmtVal(x) + ' ≠ ' + fmtVal(e) + ': ' + neqReason(x, e) + '.';
+}
+function reason(st, r, env, o) {
+  o = o || { def: true, near: true };
+  var pos = REL[st.rel].pos, w = r.w, L = r.L, R = r.R;
+  var X = fmtRaw(st.lhs), Y = fmtRaw(st.rhs);
+  switch (pos) {
+    case 'in':
+      if (w.value) {
+        var s = X + (st.rhs.t === 'P' ? ' — элемент ' : ' перечислен среди элементов ') + Y + defNote(st.rhs, R, env, o);
+        var e = fmtVal(w.el);
+        if (st.lhs.t === 's' && e !== X) s += '; ' + X + ' и ' + e + ' — одно и то же множество, порядок и повторы в записи не важны';
+        return s + '.';
+      }
+      if (!R.els.length) return 'у ' + Y + ' нет ни одного элемента' + defNote(st.rhs, R, env, o) + '.';
+      return X + ' не совпадает ни с одним из элементов ' + Y + defNote(st.rhs, R, env, o) + '.' + nearNote(L, R, o);
+    case 'sub':
+      if (w.value) {
+        if (w.empty) return 'у ' + X + ' нет элементов, поэтому среди них нет ни одного, который не принадлежал бы ' + Y + '. ∅ ⊆ X для любого множества X.';
+        return 'каждый элемент ' + X + ' (' + listEls(L) + ') принадлежит ' + Y + defNote(st.rhs, R, env, o) + '.';
+      }
+      return 'элемент ' + fmtVal(w.el) + ' множества ' + X + ' не принадлежит ' + Y + defNote(st.rhs, R, env, o) + '.' + nearNote(w.el, R, o);
+    case 'psub':
+      if (w.kind === 'notsub') return 'уже ' + X + ' ⊆ ' + Y + ' неверно: элемент ' + fmtVal(w.el) + ' множества ' + X + ' не принадлежит ' + Y + defNote(st.rhs, R, env, o) + '.' + nearNote(w.el, R, o);
+      if (w.kind === 'equal') return X + ' ⊆ ' + Y + ', но ' + X + ' = ' + Y + ' (у них одни и те же элементы), а собственное подмножество не может совпадать с самим множеством.';
+      if (!L.els.length) return '∅ ⊆ ' + Y + ', как и любое множество, и ∅ ≠ ' + Y + ', потому что ' + fmtVal(w.el) + ' ∈ ' + Y + '.';
+      return X + ' ⊆ ' + Y + ' (каждый элемент ' + X + ' принадлежит ' + Y + ') и ' + X + ' ≠ ' + Y + ': элемент ' + fmtVal(w.el) + ' есть в ' + Y + ', но не в ' + X + '.';
+    case 'eq':
+      if (w.value) {
+        if (L.t === 'u') return 'это один и тот же урэлемент.';
+        if (!L.els.length) return 'оба множества пустые.';
+        var t = 'у ' + X + ' и ' + Y + ' одни и те же элементы: ' + listEls(L) + '.';
+        if (X !== Y && st.lhs.t === 's' && st.rhs.t === 's') t += ' Порядок и повторы в записи на множество не влияют.';
+        return t;
+      }
+      if (w.kind === 'urs') return X + ' и ' + Y + ' — разные урэлементы.';
+      if (w.kind === 'types') return L.t === 'u'
+        ? X + ' — урэлемент, а ' + Y + ' — множество; урэлемент не равен никакому множеству.'
+        : X + ' — множество, а ' + Y + ' — урэлемент; урэлемент не равен никакому множеству.';
+      if (w.kind === 'left') return fmtVal(w.el) + ' ∈ ' + X + ', но ' + fmtVal(w.el) + ' ∉ ' + Y + '.';
+      return fmtVal(w.el) + ' ∈ ' + Y + ', но ' + fmtVal(w.el) + ' ∉ ' + X + '.';
+  }
+  return '';
+}
+function reasonSg(st, r) {
+  var T = fmtRaw(st.term), V = r.v;
+  if (V.t !== 's') return T + ' — урэлемент, а не множество.';
+  var n = V.els.length;
+  if (n === 0) return 'у ' + T + ' нет ни одного элемента, а у синглетона ровно один.';
+  var dup = st.term.t === 's' && st.term.els.length > n;
+  if (n === 1) {
+    var e = V.els[0], s = 'у ' + T + ' ровно один элемент: ' + fmtVal(e) + '.';
+    if (dup) s += ' Повторы в записи не дают новых элементов.';
+    if (e.t === 's' && e.els.length > 1) s += ' То, что у ' + fmtVal(e) + ' ' + e.els.length + ' ' + elWord(e.els.length) + ', неважно: элементы вложенного множества не являются элементами ' + T + '.';
+    if (e.t === 's' && !e.els.length) s += ' Этот элемент — ∅: пустое множество тоже может быть элементом.';
+    return s;
+  }
+  return 'у ' + T + ' ' + n + ' ' + elWord(n) + ': ' + listEls(V) + '.' + (dup ? ' Повторы не считаются, но и без них элементов больше одного.' : '');
+}
+// сравнение с «парным» утверждением: ∈ ↔ ⊆, ⊆ ↔ ⊂
+function contrastFor(st, r, env) {
+  if (st.kind === 'sg' || REL[st.rel].neg) return null;
+  var pos = REL[st.rel].pos, alts = [];
+  if (pos === 'in' && r.L.t === 's') alts = ['sub'];
+  if (pos === 'sub') alts = ['in', 'psub'];
+  if (pos === 'psub') alts = ['sub'];
+  for (var i = 0; i < alts.length; i++) {
+    var o = { kind: 'rel', lhs: st.lhs, rel: alts[i], rhs: st.rhs }, ro;
+    try { ro = evalStmt(o, env); } catch (e) { continue; }
+    if (ro.value !== r.value) return { st: o, r: ro };
+  }
+  return null;
+}
+function explain(st, env) {
+  var r;
+  try { r = evalStmt(st, env); }
+  catch (e) { if (e instanceof SetError) return { error: e.message }; throw e; }
+  if (st.kind === 'sg') {
+    return { value: r.value, result: r, text: fmtRaw(st.term) + (r.value ? ' является' : ' не является') + ' синглетоном: ' + reasonSg(st, r) };
+  }
+  var rel = REL[st.rel], S = fmtStmt(st), text;
+  var c = contrastFor(st, r, env);
+  var o = { def: true, near: !c };
+  if (rel.neg) {
+    var pst = { kind: 'rel', lhs: st.lhs, rel: rel.pos, rhs: st.rhs };
+    text = S + ' ' + yes(r.value) + ', так как ' + fmtStmt(pst) + ' ' + yes(!r.value) + ': ' + reason(pst, r, env, o);
+  } else {
+    text = S + ' ' + yes(r.value) + ': ' + reason(st, r, env, o);
+  }
+  if (c) text += ' ' + (c.r.value ? 'Зато ' : 'А вот ') + fmtStmt(c.st) + ' ' + yes(c.r.value) + ': ' + reason(c.st, c.r, env, { def: false, near: false });
+  return { value: r.value, result: r, text: text };
+}
+
+/* ---------- Мощность ---------- */
+function explainCard(raw, env) {
+  var a = raw.arg, n, m;
+  if (a.t === 'P') {
+    n = value(a.arg, env).els.length; m = Math.pow(2, n);
+    if (n === 0) return '|P(∅)| = 2⁰ = 1: у ∅ ровно одно подмножество — само ∅, поэтому P(∅) = {∅}.';
+    return '|' + fmtRaw(a) + '| = 2^|' + fmtRaw(a.arg) + '| = 2^' + n + ' = ' + m + ': подмножество задаётся тем, берём мы или не берём каждый из ' + n + ' ' + plural(n, 'элемента', 'элементов', 'элементов') + '.';
+  }
+  var X = value(a, env);
+  n = X.els.length;
+  if (!n) return 'у ' + fmtRaw(a) + ' нет элементов, поэтому |' + fmtRaw(a) + '| = 0.';
+  var s = 'элементы ' + fmtRaw(a) + ': ' + listEls(X) + ' — всего ' + n + '.';
+  if (hasRawDup(a, env) && a.t === 's' && a.els.length > n) s += ' Повторы в записи не считаются.';
+  var inner = null;
+  for (var i = 0; i < X.els.length; i++) if (X.els[i].t === 's' && X.els[i].els.length) { inner = X.els[i]; break; }
+  if (inner) s += ' Каждое вложенное множество (например, ' + fmtVal(inner) + ') — один элемент; его собственные элементы не считаются.';
+  if (X.els.some(function (e) { return e.t === 's' && !e.els.length; })) s += ' ∅ здесь — элемент и считается как один.';
+  return s;
+}
+function cardValue(raw, env) { return Number(value(raw, env).v); }
+function cardTag(raw, env, ans) {
+  try {
+    var a = raw.arg;
+    if (a.t === 'P') {
+      var k = value(a.arg, env).els.length;
+      if (ans === Math.pow(2, k) - 1) return 'empty_sub';
+      if (k === 0 && ans === 0) return 'empty_set';
+      return 'other';
+    }
+    var X = value(a, env), n = X.els.length;
+    if (a.t === 's' && ans === a.els.length && a.els.length !== n) return 'repeat';
+    var nested = X.els.some(function (e) { return e.t === 's' && e.els.length; });
+    if (nested && ans > n) return 'nested_card';
+    var hasE = X.els.some(function (e) { return e.t === 's' && !e.els.length; });
+    if ((hasE && ans === n - 1) || (n === 0 && ans === 1)) return 'empty_set';
+    return 'other';
+  } catch (e) { return 'other'; }
+}
+
+/* ---------- P(X): проверка ответа ---------- */
+function checkPowerset(Xraw, env, src) {
+  var text = src, offset = 0;
+  var pre = /^\s*P\s*\([^=]*\)\s*=\s*/.exec(text);
+  if (pre) { offset = pre[0].length; text = text.slice(offset); }
+  var r = parseTerm(text);
+  if (!(r.ok && r.value.t === 's')) {
+    var r2 = parseTerm('{' + text + '}');
+    if (r2.ok && text.trim()) r = r2;
+  }
+  if (!r.ok) return { syntax: { message: r.error.message, pos: r.error.pos + offset } };
+  if (r.value.t !== 's') return { syntax: { message: 'Ответ — множество подмножеств, например {∅, {a}}.', pos: offset } };
+  var X = value(Xraw, env), PX = powerset(X);
+  var entered = [], seen = [], dups = 0, extra = [];
+  for (var i = 0; i < r.value.els.length; i++) {
+    var raw = r.value.els[i], v;
+    try { v = value(raw, env); } catch (e) { if (e instanceof SetError) return { syntax: { message: e.message, pos: offset } }; throw e; }
+    if (seen.some(function (q) { return eqv(q, v); })) { dups++; continue; }
+    seen.push(v); entered.push({ raw: raw, v: v });
+  }
+  var tags = [];
+  function tag(t) { if (tags.indexOf(t) < 0) tags.push(t); }
+  entered.forEach(function (e) {
+    if (has(PX, e.v)) return;
+    var why;
+    if (e.v.t === 'u') {
+      why = fmtVal(e.v) + ' — урэлемент, а не множество, поэтому подмножеством быть не может.';
+      if (has(X, e.v)) { why += ' Подмножество из одного этого элемента записывается как {' + fmtVal(e.v) + '}.'; tag('x_sx'); } else tag('other');
+    } else {
+      var s = subset(e.v, X);
+      why = fmtVal(e.v) + ' ⊈ X: элемент ' + fmtVal(s.el) + ' не принадлежит X.';
+      if (has(X, e.v)) { why += ' ' + fmtVal(e.v) + ' — элемент X, но не подмножество X.'; tag('in_sub'); }
+      else if (s.near) { tag('x_sx'); }
+      else tag('other');
+    }
+    extra.push({ v: e.v, why: why });
+  });
+  var missing = PX.els.filter(function (p) { return !seen.some(function (q) { return eqv(q, p); }); });
+  missing.forEach(function (p) {
+    if (!p.els.length) tag('empty_sub');
+    else if (eqv(p, X)) tag('sub_psub');
+    else tag('other');
+  });
+  if (!missing.length && !extra.length) tags = [];
+  return { ok: !missing.length && !extra.length, missing: missing, extra: extra, dups: dups, total: PX.els.length, n: X.els.length, PX: PX, tags: tags };
+}
+
+/* ---------- Тег типичной ошибки ---------- */
+function isEmpty(v) { return v.t === 's' && !v.els.length; }
+function isEmptyish(v) { return isEmpty(v) || (v.t === 's' && v.els.length === 1 && isEmpty(v.els[0])); }
+function inferTag(st, env) {
+  try {
+    if (st.kind === 'sg') {
+      var T = value(st.term, env);
+      if (hasRawDup(st.term, env)) return 'repeat';
+      if (T.t === 's' && T.els.length === 1 && T.els[0].t === 's' && T.els[0].els.length >= 2) return 'nested_card';
+      if (isEmptyish(T) || (T.t === 's' && T.els.some(isEmpty))) return 'empty_set';
+      if (T.t === 's' && T.els.length === 2 && nearMiss(T.els[0], { t: 's', els: [T.els[1]] })) return 'x_sx';
+      return 'other';
+    }
+    var r = evalStmt(st, env), L = r.L, R = r.R, pos = REL[st.rel].pos, near;
+    if (pos === 'eq') {
+      if (r.w.value) return fmtRaw(st.lhs) !== fmtRaw(st.rhs) ? 'repeat' : 'other';
+      if (nearMiss(L, { t: 's', els: [R] })) return (isEmptyish(L) && isEmptyish(R)) ? 'empty_set' : 'x_sx';
+      return 'other';
+    }
+    if (pos === 'in') {
+      near = nearMiss(L, R);
+      if (isEmpty(L) && near) return 'empty_set';
+      if (L.t === 's' && member(L, R).value !== subset(L, R).value) return 'in_sub';
+      if (near) return (isEmptyish(L) && isEmptyish(near)) ? 'empty_set' : 'x_sx';
+      if (!R.els.length) return 'empty_set';
+      return 'other';
+    }
+    if (pos === 'psub') {
+      if (eqv(L, R)) return 'sub_psub';
+      if (isEmpty(L)) return 'empty_sub';
+      if (subset(L, R).value) return 'sub_psub';
+    }
+    if (isEmpty(L)) return 'empty_sub';
+    if (member(L, R).value !== subset(L, R).value) return 'in_sub';
+    var sw = subset(L, R);
+    if (!sw.value && sw.near) return (isEmptyish(sw.el) && isEmptyish(sw.near)) ? 'empty_set' : 'x_sx';
+    if (hasRawDup(st.lhs, env) || hasRawDup(st.rhs, env)) return 'repeat';
+    return 'other';
+  } catch (e) { return 'other'; }
+}
+
+/* ---------- Упражнения из сборника (эталоны) ---------- */
+var BOOK = [
+  { id: '1.1', kind: 'truth', prompt: 'Какие из следующих утверждений верны?',
+    items: ['{a,b}={b,a}', '{a,b,b}={b,a,a}', '{a,b}={b,c}', 'a∈{a,b}', 'a∈{b,c}', '{a,b}⊆{a,b,c}', '{b,c}⊆{a,b,c}', '{a}⊆{a,b,c}', '{a,d}⊆{a,b,c}', '{a,b,c}⊆{a,b,c}'],
+    expect: [1, 2, 4, 6, 7, 8, 10] },
+  { id: '1.2', kind: 'truth', sg: true, prompt: 'Является ли множество {{1, 2, 3}} синглетоном? Отметьте, если да.',
+    items: [{ sg: '{{1,2,3}}' }], expect: [1] },
+  { id: '1.3', kind: 'truth', env: { A: '{a,{b},c}' }, prompt: 'Пусть A = {a, {b}, c}. Какие из следующих утверждений верны?',
+    items: ['a∈A', 'b∈A', '{a}∈A', '{b}∈A', '{a}⊆A', '{b}⊆A', '{{b}}⊆A', '{a,b,c}⊆A', '{a,b}⊆A'],
+    expect: [1, 4, 5, 7] },
+  { id: '1.4', kind: 'truth', prompt: 'Какие из следующих утверждений верны?',
+    items: ['∅∈{∅}', '∅∈{{∅}}', '∅⊆{∅}', '∅⊆{{∅}}', '∅⊆∅', '∅∈∅'], expect: [1, 3, 4, 5] },
+  { id: '1.5', kind: 'truth', prompt: 'Какие из следующих утверждений верны?',
+    items: ['{1,2}⊆{1,2,3}', '{1,2}⊂{1,2,3}', '{1,2}⊆{1,2}', '{1,2}⊂{1,2}'], expect: [1, 2, 3] },
+  { id: '1.24', kind: 'powerset', prompt: 'Выпишите все элементы P(X).',
+    parts: [{ X: '{a}', expect: '{∅,{a}}' }, { X: '{a,b}', expect: '{∅,{a},{b},{a,b}}' }, { X: '{a,b,c}', expectSize: 8 }] },
+  { id: '1.25', kind: 'powerset', prompt: 'Выпишите все элементы P(X).',
+    parts: [{ X: '∅', expect: '{∅}' }, { X: '{∅}', expect: '{∅,{∅}}' }, { X: '{∅,{∅}}', expect: '{∅,{∅},{{∅}},{∅,{∅}}}' }] },
+  { id: '1.26', kind: 'card', prompt: 'Найдите мощности множеств.',
+    items: ['|{1,2,3}|', '|{1,{2,3}}|', '|∅|', '|{∅}|', '|{∅,{∅}}|', '|{∅,{∅},{∅,{∅}}}|', '|P(∅)|', '|P({∅})|'],
+    expect: [3, 2, 0, 1, 2, 3, 1, 2] }
+];
+var LETTERS_RU = ['а', 'б', 'в', 'г', 'д', 'е'];
+function envOf(defs) { var e = {}; for (var k in (defs || {})) e[k] = term(defs[k]); return e; }
+function bookTasks() {
+  var out = [];
+  BOOK.forEach(function (b) {
+    var env = envOf(b.env);
+    if (b.kind === 'truth') {
+      out.push({ kind: 'truth', id: b.id, title: 'Упражнение ' + b.id, prompt: b.prompt, env: env, sg: !!b.sg,
+        items: b.items.map(function (s) { return { st: typeof s === 'string' ? stmt(s) : { kind: 'sg', term: term(s.sg) } }; }) });
+    } else if (b.kind === 'powerset') {
+      b.parts.forEach(function (p, i) {
+        out.push({ kind: 'powerset', id: b.id + LETTERS_RU[i], title: 'Упражнение ' + b.id + ' (' + LETTERS_RU[i] + ')', prompt: b.prompt, env: env, X: term(p.X) });
+      });
+    } else {
+      out.push({ kind: 'card', id: b.id, title: 'Упражнение ' + b.id, prompt: b.prompt, env: env,
+        items: b.items.map(function (s) { return { term: term(s) }; }) });
+    }
+  });
+  return out;
+}
+
+/* ---------- Автотесты ---------- */
+function lcg(seed) { var s = seed >>> 0; return function () { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; }; }
+function randTerm(rnd, depth) {
+  if (depth <= 0 || rnd() < 0.35) return { t: 'u', v: 'abcd123'[Math.floor(rnd() * 7)] };
+  var n = Math.floor(rnd() * 4), els = [];
+  for (var i = 0; i < n; i++) els.push(randTerm(rnd, depth - 1));
+  return { t: 's', els: els };
+}
+function randSet(rnd, depth) { var t = randTerm(rnd, depth); return t.t === 's' ? t : { t: 's', els: [t] }; }
+function shuffleRaw(rnd, S) {
+  var els = S.els.slice();
+  if (els.length && rnd() < 0.5) els.push(els[Math.floor(rnd() * els.length)]);
+  for (var i = els.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = els[i]; els[i] = els[j]; els[j] = t; }
+  return { t: 's', els: els };
+}
+function selfTest() {
+  var results = [];
+  function check(name, ok, detail) { results.push({ name: name, ok: !!ok, detail: ok ? '' : (detail || '') }); }
+  function safe(name, fn) { try { fn(); } catch (e) { check(name, false, 'исключение: ' + e.message); } }
+
+  // эталоны из сборника
+  BOOK.forEach(function (b) {
+    safe('Эталон ' + b.id, function () {
+      var env = envOf(b.env);
+      if (b.kind === 'truth') {
+        var got = [];
+        b.items.forEach(function (s, i) {
+          var st = typeof s === 'string' ? stmt(s) : { kind: 'sg', term: term(s.sg) };
+          if (evalStmt(st, env).value) got.push(i + 1);
+        });
+        check('Эталон ' + b.id + ': верны ' + b.expect.join(', '), got.join() === b.expect.join(), 'получено: ' + got.join(', '));
+      } else if (b.kind === 'powerset') {
+        b.parts.forEach(function (p) {
+          var PX = value({ t: 'P', arg: term(p.X) }, env);
+          if (p.expect) {
+            check('Эталон ' + b.id + ': P(' + p.X + ') = ' + p.expect, eqv(PX, value(term(p.expect), env)), 'получено: ' + fmtVal(PX));
+            var chk = checkPowerset(term(p.X), env, p.expect);
+            check('Эталон ' + b.id + ': проверка ответа ' + p.expect + ' без ошибок', chk.ok, JSON.stringify(chk.syntax || { missing: chk.missing.length, extra: chk.extra.length }));
+          } else check('Эталон ' + b.id + ': |P(' + p.X + ')| = ' + p.expectSize, PX.els.length === p.expectSize, 'получено: ' + PX.els.length);
+        });
+      } else {
+        b.items.forEach(function (s, i) {
+          var v = cardValue(term(s), env);
+          check('Эталон ' + b.id + ': ' + s + ' = ' + b.expect[i], v === b.expect[i], 'получено: ' + v);
+        });
+      }
+    });
+  });
+
+  // свойства на случайных множествах
+  safe('Свойства', function () {
+    var rnd = lcg(20260928), bad = { eq: null, empty: null, pow: null, sx: null, round: null, expl: null };
+    for (var k = 0; k < 500; k++) {
+      var A = randSet(rnd, 3), B = rnd() < 0.5 ? shuffleRaw(rnd, A) : randSet(rnd, 3);
+      var Av = value(A), Bv = value(B);
+      var lhs = eqv(Av, Bv), rhs = subset(Av, Bv).value && subset(Bv, Av).value;
+      if (lhs !== rhs && !bad.eq) bad.eq = fmtRaw(A) + ' / ' + fmtRaw(B);
+      if (!evalStmt({ kind: 'rel', lhs: { t: 's', els: [] }, rel: 'sub', rhs: A }).value && !bad.empty) bad.empty = fmtRaw(A);
+      if (Av.els.length <= 6 && powerset(Av).els.length !== Math.pow(2, Av.els.length) && !bad.pow) bad.pow = fmtRaw(A);
+      var x = randTerm(rnd, 3);
+      if (equal(value(x), value({ t: 's', els: [x] })).value && !bad.sx) bad.sx = fmtRaw(x);
+      var re = parseTerm(fmtRaw(A));
+      if ((!re.ok || !eqv(value(re.value), Av)) && !bad.round) bad.round = fmtRaw(A);
+      var rels = ['in', 'notin', 'sub', 'nsub', 'psub', 'eq', 'neq'], st = { kind: 'rel', lhs: B, rel: rels[k % 7], rhs: A };
+      var ex = explain(st);
+      if ((ex.error || ex.text.indexOf(fmtStmt(st) + ' ' + yes(ex.value)) !== 0 || ex.value !== evalStmt(st).value) && !bad.expl) bad.expl = fmtStmt(st);
+    }
+    check('Свойство: A = B ⇔ A ⊆ B и B ⊆ A (500 пар)', !bad.eq, bad.eq);
+    check('Свойство: ∅ ⊆ X для любого X', !bad.empty, bad.empty);
+    check('Свойство: |P(X)| = 2^|X|', !bad.pow, bad.pow);
+    check('Свойство: x ≠ {x}', !bad.sx, bad.sx);
+    check('Свойство: разбор(запись(X)) = X', !bad.round, bad.round);
+    check('Объяснение начинается с вычисленного ответа', !bad.expl, bad.expl);
+    for (var n = 0; n <= 6; n++) {
+      var S = { t: 's', els: [] }; for (var i = 0; i < n; i++) S.els.push({ t: 'u', v: String(i + 1) });
+      if (powerset(value(S)).els.length !== Math.pow(2, n)) check('|P(X)| = 2^' + n, false, '');
+    }
+    check('Свойство: канонический вид не зависит от порядка и повторов', fmtVal(value(term('{b,{c,a},a,b}'))) === '{a, b, {a, c}}', fmtVal(value(term('{b,{c,a},a,b}'))));
+  });
+
+  // ASCII и символы
+  safe('Ввод', function () {
+    [['a in {a,b}', true], ['a notin {b}', true], ['{a} sub {a,b}', true], ['{a} psub {a}', false], ['{a,b} psub {b,a,c}', true],
+     ['0 sub {}', true], ['{} in {0}', true], ['{} = 0', true], ['P({a}) = {0,{a}}', true], ['|{a,{b,c}}| = 2', true],
+     ['|P({a,b})| = 4', true], ['{a} nsub {b}', true], ['a != {a}', true], ['∅ ∈ ∅', false], ['{a,b,b} = {b,a,a}', true]
+    ].forEach(function (c) {
+      var r = parseStatement(c[0]);
+      check('Ввод: ' + c[0] + ' → ' + (c[1] ? 'верно' : 'неверно'), r.ok && evalStmt(r.value, {}).value === c[1], r.ok ? 'получено: ' + evalStmt(r.value, {}).value : r.error.message);
+    });
+  });
+
+  // ошибки парсера
+  safe('Парсер', function () {
+    [['{a,b', 'Незакрытая скобка «{»', 0], ['{a,,b}', 'Пустой элемент', 3], ['{a,}', 'Пустой элемент', 3], ['{,a}', 'Пустой элемент', 1],
+     ['{a#b}', 'Неизвестный символ «#»', 2], ['{a,b}}', 'Лишняя закрывающая скобка', 5], ['{a,{b}', 'Незакрытая скобка «{»', 0],
+     ['P({a}', 'Незакрытая скобка «(»', 1], ['|{a}', 'Не хватает закрывающей «|»', 0], ['{ab}', 'Неизвестное обозначение «ab»', 1]
+    ].forEach(function (c) {
+      var r = parseTerm(c[0]);
+      check('Парсер: «' + c[0] + '» → ' + c[1] + ', позиция ' + (c[2] + 1), !r.ok && r.error.message.indexOf(c[1]) >= 0 && r.error.pos === c[2], r.ok ? 'разобрано без ошибки' : r.error.message + ' @' + r.error.pos);
+    });
+    var r2 = parseStatement('a in');
+    check('Парсер: «a in» → ожидался элемент', !r2.ok && /обрывается/.test(r2.error.message), r2.ok ? '' : r2.error.message);
+    var r3 = parseStatement('a {a}');
+    check('Парсер: «a {a}» → нужно отношение', !r3.ok && /ожидалось отношение/.test(r3.error.message), r3.ok ? '' : r3.error.message);
+  });
+
+  // объяснения и теги
+  safe('Объяснения', function () {
+    var env = { A: term('{a,{b},c}') };
+    var ex = explain(stmt('{b} ⊆ A'), env);
+    check('Объяснение {b} ⊆ A: свидетель b и контраст с ∈', ex.text.indexOf('элемент b множества {b} не принадлежит A') >= 0 && ex.text.indexOf('Зато {b} ∈ A верно') >= 0, ex.text);
+    var ex2 = explain(stmt('∅ ⊆ {a}'));
+    check('Объяснение ∅ ⊆ {a}: ∅ ⊆ X для любого X', ex2.value && ex2.text.indexOf('∅ ⊆ X для любого множества X') >= 0, ex2.text);
+    var ex3 = explain(stmt('{1,2} ⊂ {1,2}'));
+    check('Объяснение {1,2} ⊂ {1,2}: множества равны', !ex3.value && ex3.text.indexOf('не может совпадать') >= 0, ex3.text);
+    var ex4 = explain(stmt('a ⊆ {a}'));
+    check('Запись a ⊆ X отклоняется: a — урэлемент', !!ex4.error, JSON.stringify(ex4));
+    [['{b} ∈ A', 'in_sub'], ['{a} ⊆ A', 'in_sub'], ['b ∈ A', 'x_sx'], ['∅ ⊆ {a}', 'empty_sub'], ['{1,2} ⊂ {1,2}', 'sub_psub'],
+     ['{a,b,b} = {b,a}', 'repeat'], ['∅ ∈ {{∅}}', 'empty_set'], ['∅ = {∅}', 'empty_set'], ['a = {a}', 'x_sx']
+    ].forEach(function (c) { var t = inferTag(stmt(c[0]), env); check('Тег ошибки: ' + c[0] + ' → ' + c[1], t === c[1], 'получено: ' + t); });
+    [['{{1,2,3}}', true], ['{∅}', true], ['{a,a}', true], ['{{a},{a}}', true], ['{a,b}', false], ['∅', false], ['{a,{a}}', false]
+    ].forEach(function (c) { check('Синглетон: ' + c[0] + ' → ' + (c[1] ? 'да' : 'нет'), evalStmt({ kind: 'sg', term: term(c[0]) }).value === c[1], ''); });
+    check('Тег мощности: |{1,{2,3}}| = 3 → вложенное', cardTag(term('|{1,{2,3}}|'), {}, 3) === 'nested_card', '');
+    check('Тег мощности: |{∅}| = 0 → ∅ и {∅}', cardTag(term('|{∅}|'), {}, 0) === 'empty_set', '');
+    var pc = checkPowerset(term('{a,b}'), {}, '{a}, {b}, {a,b}, {b,a}, c');
+    check('P(X): порядок/повторы не ошибка, пропуск ∅ и лишний c найдены', !pc.syntax && pc.missing.length === 1 && isEmpty(pc.missing[0]) && pc.extra.length === 1 && pc.dups === 1, JSON.stringify(pc.syntax || { m: pc.missing.map(fmtVal), e: pc.extra.length, d: pc.dups }));
+    var ps = checkPowerset(term('{a}'), {}, '{∅, {a}');
+    check('P(X): синтаксическая ошибка сообщается с позицией', !!ps.syntax && ps.syntax.pos === 0, JSON.stringify(ps));
+  });
+
+  var failed = results.filter(function (r) { return !r.ok; });
+  return { passed: results.length - failed.length, failed: failed.length, total: results.length, results: results };
+}
+
+var api = {
+  REL: REL, TAGS: TAGS, SetError: SetError,
+  parseTerm: parseTerm, parseStatement: parseStatement, parseAny: parseAny, parseDefs: parseDefs, stmt: stmt, term: term,
+  value: value, powerset: powerset, eqv: eqv, cmp: cmp, has: has, canonSet: canonSet,
+  member: member, subset: subset, equal: equal, psubset: psubset, evalStmt: evalStmt,
+  explain: explain, explainCard: explainCard, cardValue: cardValue, cardTag: cardTag, inferTag: inferTag, checkPowerset: checkPowerset,
+  fmtRaw: fmtRaw, fmtVal: fmtVal, fmtStmt: fmtStmt, texRaw: texRaw, texStmt: texStmt, depthRaw: depthRaw, depthStmt: depthStmt,
+  canonKey: canonKey, hasRawDup: hasRawDup, listEls: listEls, plural: plural,
+  BOOK: BOOK, bookTasks: bookTasks, selfTest: selfTest
+};
+root.SetCore = api;
+})(typeof window !== 'undefined' ? window : this);
+</script>
+
+<!-- ===================== ГЕНЕРАТОР ===================== -->
+<script id="set-gen">
+(function (root) {
+'use strict';
+var C = root.SetCore;
+
+function xmur3(str) {
+  var h = 1779033703 ^ str.length;
+  for (var i = 0; i < str.length; i++) { h = Math.imul(h ^ str.charCodeAt(i), 3432918353); h = h << 13 | h >>> 19; }
+  return function () { h = Math.imul(h ^ h >>> 16, 2246822507); h = Math.imul(h ^ h >>> 13, 3266489909); return (h ^= h >>> 16) >>> 0; };
+}
+function mulberry32(a) {
+  return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+}
+function makeRng(seedStr) {
+  var r = mulberry32(xmur3(seedStr)());
+  var api = {
+    f: r,
+    int: function (n) { return Math.floor(r() * n); },
+    range: function (a, b) { return a + Math.floor(r() * (b - a + 1)); },
+    pick: function (arr) { return arr[Math.floor(r() * arr.length)]; },
+    chance: function (p) { return r() < p; },
+    shuffle: function (arr) { var a = arr.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(r() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  };
+  return api;
+}
+
+/* конструкторы сырых термов */
+function u(v) { return { t: 'u', v: String(v) }; }
+function s() { return { t: 's', els: Array.prototype.slice.call(arguments) }; }
+function sa(arr) { return { t: 's', els: arr.slice() }; }
+function E() { return { t: 's', els: [] }; }
+function V(name) { return { t: 'var', name: name }; }
+function st(l, rel, r) { return { kind: 'rel', lhs: l, rel: rel, rhs: r }; }
+function sg(t) { return { kind: 'sg', term: t }; }
+function card(t) { return { t: 'card', arg: t }; }
+function Pw(t) { return { t: 'P', arg: t }; }
+
+var TYPES = [
+  { id: 1, name: 'Равенство множеств' },
+  { id: 2, name: '∈ и ⊆ для плоских множеств' },
+  { id: 3, name: 'Синглетон?' },
+  { id: 4, name: '∈ против ⊆ во вложенных множествах' },
+  { id: 5, name: 'Ловушки с пустым множеством' },
+  { id: 6, name: '⊆ против ⊂' },
+  { id: 7, name: 'Перечислить P(X)' },
+  { id: 8, name: 'Мощность' }
+];
+var LEVELS = {
+  easy:   { id: 'easy',   depth: 2, size: [2, 3], trap: 1 / 3, ps: [1, 3], nested: false },
+  medium: { id: 'medium', depth: 3, size: [3, 4], trap: 0.45,  ps: [2, 3], nested: true },
+  hard:   { id: 'hard',   depth: 3, size: [3, 5], trap: 0.6,   ps: [3, 4], nested: true }
+};
+var LETTERS = ['a', 'b', 'c', 'd', 'e', 'f', 'g'], DIGITS = ['1', '2', '3', '4', '5', '6', '7'];
+function atoms(rng) {
+  var pool = rng.chance(0.7) ? LETTERS : DIGITS;
+  return rng.shuffle(pool).slice(0, 6).sort(function (a, b) { return C.cmp(u(a), u(b)); }).map(u);
+}
+function withDup(rng, els) { var e = els.slice(); e.push(rng.pick(els)); return sa(rng.shuffle(e)); }
+function perm(rng, els) {
+  if (els.length < 2) return sa(els);
+  var p; do { p = rng.shuffle(els); } while (p.every(function (x, i) { return x === els[i]; }));
+  return sa(p);
+}
+function properSub(rng, els) { var k = rng.range(1, els.length - 1); return sa(rng.shuffle(els).slice(0, k).sort(function (a, b) { return C.cmp(C.value(a), C.value(b)); })); }
+
+/* ---------- сборка блока «Какие утверждения верны?» ---------- */
+function assemble(rng, pairs, fillers, n, share, env, opt) {
+  var limit = opt.depth;
+  function prep(c) {
+    try {
+      if (C.depthStmt(c.st, env) > limit) return null;
+      c.truth = C.evalStmt(c.st, env).value;
+      c.key = C.fmtStmt(c.st);
+      c.ckey = opt.canon ? C.canonKey(c.st, env) : c.key;
+      return c;
+    } catch (e) { return null; }
+  }
+  var P = [], F = [];
+  pairs.forEach(function (p, i) {
+    var a = prep({ st: p[0][0], tag: p[0][1], pair: i }), b = prep({ st: p[1][0], tag: p[1][1], pair: i });
+    if (a && b && a.ckey !== b.ckey) P.push([a, b]);
+  });
+  fillers.forEach(function (f) { var c = prep({ st: f[0], tag: f[1], pair: -1 }); if (c) F.push(c); });
+  var need = Math.max(Math.ceil(n / 3), Math.round(n * share));
+  var lo = Math.ceil(0.3 * n - 1e-9), hi = Math.floor(0.7 * n + 1e-9);
+  var best = null, bestBad = Infinity;
+  for (var attempt = 0; attempt < 80 && bestBad > 0; attempt++) {
+    var chosen = [], keys = {}, traps = 0, leftovers = [];
+    var ok = function (c) { return !keys['r' + c.key] && !keys['c' + c.ckey]; };
+    var take = function (c) { keys['r' + c.key] = 1; keys['c' + c.ckey] = 1; chosen.push(c); };
+    rng.shuffle(P).forEach(function (p) {
+      if (traps < need && chosen.length + 2 <= n && ok(p[0]) && ok(p[1])) { take(p[0]); take(p[1]); traps += 2; }
+      else leftovers.push(p[0], p[1]);
+    });
+    var target = rng.range(Math.max(lo, Math.ceil(0.4 * n)), Math.min(hi, Math.floor(0.6 * n)));
+    var pool = rng.shuffle(F).concat(rng.shuffle(leftovers));
+    while (chosen.length < n) {
+      var t = chosen.filter(function (c) { return c.truth; }).length, want = t < target, idx = -1;
+      for (var i = 0; i < pool.length; i++) if (pool[i].truth === want && ok(pool[i])) { idx = i; break; }
+      if (idx < 0) for (var j = 0; j < pool.length; j++) if (ok(pool[j])) { idx = j; break; }
+      if (idx < 0) break;
+      take(pool.splice(idx, 1)[0]);
+    }
+    var tt = chosen.filter(function (c) { return c.truth; }).length;
+    var trapN = countTraps(chosen);
+    var bad = Math.max(0, n - chosen.length) * 10 + Math.max(0, lo - tt) + Math.max(0, tt - hi) + Math.max(0, Math.ceil(n / 3) - trapN);
+    if (bad < bestBad) { bestBad = bad; best = chosen; }
+  }
+  return rng.shuffle(best).map(function (c) {
+    var trap = c.pair >= 0 && best.some(function (d) { return d !== c && d.pair === c.pair; });
+    return { st: c.st, tag: c.tag || (trap ? C.inferTag(c.st, env) : null), trap: trap, pair: trap ? c.pair : -1 };
+  });
+}
+function countTraps(items) {
+  return items.filter(function (c) { return c.pair >= 0 && items.some(function (d) { return d !== c && d.pair === c.pair; }); }).length;
+}
+function truthTask(rng, L, n, pairs, fillers, env, opt) {
+  return { kind: 'truth', env: env || {}, items: assemble(rng, pairs, fillers, n, L.trap, env || {}, { depth: opt.depth || L.depth, canon: !!opt.canon }) };
+}
+
+/* 1. Равенство */
+function genEq(rng, L, n) {
+  var A = atoms(rng), k = rng.range(L.size[0], L.size[1]), base = A.slice(0, k), o = A[k];
+  var x = base[0], y = base[1], z = base[2] || A[k + 1], X = sa(base);
+  var pairs = [
+    [[st(withDup(rng, base), 'eq', perm(rng, base)), 'repeat'], [st(withDup(rng, base), 'eq', sa(base.concat([o]))), null]],
+    [[st(x, 'eq', s(x)), 'x_sx'], [st(s(x), 'eq', s(x, x)), 'repeat']],
+    [[st(E(), 'eq', s(E())), 'empty_set'], [st(s(E(), E()), 'eq', s(E())), 'repeat']],
+    [[st(s(x, y), 'eq', s(s(x, y))), 'x_sx'], [st(s(s(x, y)), 'eq', s(s(y, x))), 'repeat']],
+    [[st(s(x, s(y)), 'eq', s(x, y)), 'x_sx'], [st(s(x, s(y)), 'eq', s(s(y), x)), 'repeat']],
+    [[st(E(), 'neq', s(E())), 'empty_set'], [st(s(E()), 'eq', E()), 'empty_set']],
+    [[st(perm(rng, base), 'neq', withDup(rng, base)), 'repeat'], [st(X, 'neq', sa(base.slice(1).concat([o]))), null]]
+  ];
+  var fill = [
+    [st(X, 'eq', perm(rng, base)), null],
+    [st(perm(rng, base), 'eq', sa(base.slice(0, k - 1))), null],
+    [st(sa(base.slice(1).concat([o])), 'eq', perm(rng, base)), null],
+    [st(s(x, y), 'eq', s(y, x)), null],
+    [st(s(x), 'eq', s(y)), null],
+    [st(s(x, o), 'neq', s(o, x)), null],
+    [st(s(y, x, y), 'eq', s(x, y)), 'repeat'],
+    [st(s(x, y), 'eq', s(y, z)), null],
+    [st(s(x, y, x), 'neq', s(y, x)), 'repeat']
+  ];
+  if (L.nested) {
+    fill.push([st(s(x, s(y, z)), 'eq', s(s(z, y), x)), 'repeat']);
+    fill.push([st(s(x, s(y, z)), 'eq', s(x, y, z)), 'x_sx']);
+    fill.push([st(s(s(x), s(x, x)), 'eq', s(s(x))), 'repeat']);
+    pairs.push([[st(s(E(), s(E())), 'eq', s(s(E()), E(), E())), 'repeat'], [st(s(E(), s(E())), 'eq', s(E())), 'empty_set']]);
+  }
+  return truthTask(rng, L, n, pairs, fill, {}, {});
+}
+
+/* 2. ∈ / ⊆ для плоских множеств */
+function genFlat(rng, L, n) {
+  var A = atoms(rng), k = rng.range(Math.max(3, L.size[0]), Math.max(3, L.size[1] - (L.id === 'hard' ? 1 : 0))), base = A.slice(0, k);
+  var o = A[k], o2 = A[k + 1], xs = rng.shuffle(base), x1 = xs[0], x2 = xs[1], x3 = xs[2];
+  var Y = function () { return sa(base); };
+  var S = properSub(rng, base);
+  var pairs = [
+    [[st(s(x1), 'in', Y()), 'in_sub'], [st(s(x1), 'sub', Y()), 'in_sub']],
+    [[st(x2, 'in', Y()), 'x_sx'], [st(s(x2), 'in', Y()), 'x_sx']],
+    [[st(E(), 'sub', Y()), 'empty_sub'], [st(E(), 'in', Y()), 'in_sub']],
+    [[st(perm(rng, base), 'sub', Y()), 'sub_psub'], [st(perm(rng, base), 'psub', Y()), 'sub_psub']],
+    [[st(s(x1, x3), 'sub', Y()), 'in_sub'], [st(s(x1, x3), 'in', Y()), 'in_sub']],
+    [[st(o, 'in', Y()), null], [st(s(o), 'sub', Y()), null]]
+  ];
+  var fill = [
+    [st(x3, 'in', Y()), null], [st(o2, 'in', Y()), null], [st(o, 'notin', Y()), null], [st(x1, 'notin', Y()), null],
+    [st(S, 'sub', Y()), null], [st(sa(S.els.concat([o])), 'sub', Y()), null], [st(Y(), 'sub', S), null],
+    [st(s(x2, o), 'sub', Y()), null], [st(Y(), 'sub', Y()), null], [st(sa(S.els.concat([o2])), 'nsub', Y()), null],
+    [st(s(x2), 'nsub', Y()), null], [st(s(x3, x3), 'sub', Y()), 'repeat']
+  ];
+  return truthTask(rng, L, n, pairs, fill, {}, { canon: true, depth: 2 });
+}
+
+/* 3. Синглетон? */
+function genSg(rng, L, n) {
+  var A = atoms(rng), x = A[0], y = A[1], z = A[2], w = A[3], q = A[4];
+  var pairs = [
+    [[sg(s(x, x)), 'repeat'], [sg(s(x, y)), null]],
+    [[sg(s(s(x, y, z))), 'nested_card'], [sg(s(x, y, z)), null]],
+    [[sg(s(E())), 'empty_set'], [sg(E()), 'empty_set']],
+    [[sg(s(s(x), s(x))), 'repeat'], [sg(s(x, s(x))), 'x_sx']],
+    [[sg(s(s(E()))), 'empty_set'], [sg(s(E(), s(E()))), 'empty_set']],
+    [[sg(s(s(y, z), s(z, y))), 'repeat'], [sg(s(s(y), s(z))), null]],
+    [[sg(s(s(w, q))), 'nested_card'], [sg(s(w, s(q))), null]]
+  ];
+  var fill = [
+    [sg(s(w)), null], [sg(s(y, x, y)), null], [sg(s(s(x, y), x)), null], [sg(s(z, z, z)), 'repeat'],
+    [sg(s(s(s(x)))), null], [sg(s(q, q, w)), null], [sg(s(E(), E())), 'repeat']
+  ];
+  var t = truthTask(rng, L, n, pairs, fill, {}, {});
+  t.sg = true;
+  return t;
+}
+
+/* 4. ∈ против ⊆ во вложенных множествах */
+function genNested(rng, L, n) {
+  var A = atoms(rng), a1 = A[0], a2 = A[2], b1 = A[1], b2 = A[3], b3 = A[4], c = A[5];
+  var els = [a1, s(b1), a2], nested2 = L.id !== 'easy' && rng.chance(0.7), withE = L.id === 'hard' && rng.chance(0.5);
+  if (nested2) els.push(s(b2, b3));
+  if (withE) els.push(E());
+  if (L.id === 'hard' && !withE) els.push(s(s(b1)));
+  var name = rng.pick(['A', 'A', 'B', 'X']), Av = V(name), env = {};
+  env[name] = sa(rng.shuffle(els));
+  var pairs = [
+    [[st(a1, 'in', Av), 'x_sx'], [st(s(a1), 'sub', Av), 'in_sub']],
+    [[st(s(b1), 'in', Av), 'in_sub'], [st(s(b1), 'sub', Av), 'in_sub']],
+    [[st(b1, 'in', Av), 'x_sx'], [st(s(s(b1)), 'sub', Av), 'in_sub']],
+    [[st(s(a2), 'in', Av), 'in_sub'], [st(s(a2), 'sub', Av), 'in_sub']],
+    [[st(E(), 'sub', Av), 'empty_sub'], [st(E(), 'in', Av), withE ? 'empty_set' : 'in_sub']]
+  ];
+  if (nested2) {
+    pairs.push([[st(s(b2, b3), 'in', Av), 'in_sub'], [st(s(b2, b3), 'sub', Av), 'in_sub']]);
+    pairs.push([[st(b2, 'in', Av), 'x_sx'], [st(s(b2), 'in', Av), 'x_sx']]);
+  }
+  var fill = [
+    [st(s(a1, b1, a2), 'sub', Av), null], [st(s(a1, a2), 'sub', Av), null], [st(s(a1, s(b1)), 'sub', Av), null],
+    [st(s(a1, b1), 'sub', Av), null], [st(Av, 'sub', Av), null], [st(c, 'in', Av), null], [st(c, 'notin', Av), null],
+    [st(s(b1), 'notin', Av), null], [st(a2, 'in', Av), null], [st(s(a1, s(b1)), 'in', Av), null], [st(b1, 'notin', Av), null]
+  ];
+  if (L.id === 'hard') {
+    pairs.push([[st(s(a1, s(b1)), 'psub', Av), 'sub_psub'], [st(Av, 'psub', Av), 'sub_psub']]);
+    fill.push([st(s(s(b1)), 'in', Av), null]);
+  }
+  var t = truthTask(rng, L, n, pairs, fill, env, { canon: true });
+  t.context = name + ' = ' + C.fmtRaw(env[name]);
+  return t;
+}
+
+/* 5. Ловушки с ∅ */
+function genEmpty(rng, L, n) {
+  var A = atoms(rng), x = A[0], y = A[1];
+  var Rs = rng.shuffle([E(), s(E()), s(s(E())), s(E(), s(E())), s(x), s(x, E()), s(x, s(E())), s(x, y)]);
+  var pairs = [];
+  Rs.forEach(function (R) { pairs.push([[st(E(), 'in', R), null], [st(E(), 'sub', R), 'empty_sub']]); });
+  [s(E()), s(s(E())), s(E(), s(E())), s(x, s(E()))].forEach(function (R) { pairs.push([[st(s(E()), 'in', R), null], [st(s(E()), 'sub', R), null]]); });
+  pairs.push([[st(E(), 'eq', s(E())), 'empty_set'], [st(E(), 'psub', s(E())), 'empty_sub']]);
+  pairs.push([[st(E(), 'sub', E()), 'empty_sub'], [st(E(), 'psub', E()), 'sub_psub']]);
+  pairs.push([[st(E(), 'in', E()), 'empty_set'], [st(s(E()), 'in', s(E())), 'empty_set']]);
+  var fill = [
+    [st(s(E()), 'sub', E()), null], [st(s(E()), 'eq', s(E(), E())), 'repeat'], [st(E(), 'notin', E()), null],
+    [st(E(), 'notin', s(x)), null], [st(s(E()), 'neq', E()), 'empty_set'], [st(s(s(E())), 'sub', s(E(), s(E()))), null]
+  ];
+  return truthTask(rng, L, n, pairs, fill, {}, { canon: true, depth: 3 });
+}
+
+/* 6. ⊆ против ⊂ */
+function genPsub(rng, L, n) {
+  var A = atoms(rng), k = rng.range(3, Math.max(3, L.size[1] - 1)), base = A.slice(0, k), o = A[k];
+  var Y = function () { return sa(base); };
+  var S = properSub(rng, base), S2 = properSub(rng, base), Sbad = sa(S.els.concat([o]));
+  var x = rng.pick(base);
+  var pairs = [
+    [[st(S, 'sub', Y()), null], [st(S, 'psub', Y()), 'sub_psub']],
+    [[st(perm(rng, base), 'sub', Y()), 'sub_psub'], [st(perm(rng, base), 'psub', Y()), 'sub_psub']],
+    [[st(E(), 'sub', Y()), 'empty_sub'], [st(E(), 'psub', Y()), 'empty_sub']],
+    [[st(E(), 'sub', E()), 'empty_sub'], [st(E(), 'psub', E()), 'sub_psub']],
+    [[st(Y(), 'sub', withDup(rng, base)), 'repeat'], [st(Y(), 'psub', withDup(rng, base)), 'sub_psub']],
+    [[st(Sbad, 'sub', Y()), null], [st(Sbad, 'psub', Y()), null]]
+  ];
+  var fill = [
+    [st(Y(), 'sub', S2), null], [st(Y(), 'psub', S2), null], [st(S2, 'psub', Y()), null], [st(Sbad, 'nsub', Y()), null],
+    [st(s(x), 'psub', Y()), null], [st(Y(), 'psub', Y()), 'sub_psub'], [st(S, 'nsub', Y()), null], [st(s(x, o), 'psub', Y()), null]
+  ];
+  if (L.nested) {
+    var Z = sa(base.slice(0, 2).concat([s(base[2])]));
+    pairs.push([[st(s(s(base[2])), 'psub', Z), 'in_sub'], [st(s(base[2]), 'psub', Z), 'in_sub']]);
+  }
+  return truthTask(rng, L, n, pairs, fill, {}, { canon: true });
+}
+
+/* 7. P(X) */
+function genPowerset(rng, L) {
+  var A = atoms(rng), k = rng.range(L.ps[0], L.ps[1]), els = A.slice(0, k);
+  if (L.id !== 'easy' && k >= 2 && rng.chance(0.5)) {
+    var i = rng.int(k);
+    els[i] = rng.chance(0.5) ? E() : s(els[(i + 1) % k]);
+  }
+  return { kind: 'powerset', env: {}, X: sa(els) };
+}
+
+/* 8. Мощность */
+function genCard(rng, L, n) {
+  var A = atoms(rng), a = A[0], b = A[1], c = A[2], d = A[3];
+  var nested = [card(s(a, s(b, c))), card(s(s(a, b, c))), card(s(a, s(a), s(a, b))), card(s(s(a), s(b), s(a))),
+    card(s(E(), s(E()))), card(s(s(E()))), card(s(a, s(b, s(c)))), card(s(E(), s(E()), s(E(), s(E())))), card(s(d, s(d, a)))];
+  var plain = [card(s(a, b, a)), card(E()), card(s(E())), card(s(a, b, c, d)), card(s(c, c, c))];
+  var pw = [card(Pw(sa(A.slice(0, rng.range(1, 3))))), card(Pw(E())), card(Pw(s(E()))), card(Pw(s(a, s(b, c)))), card(Pw(sa(A.slice(0, L.ps[1]))))];
+  var ok = function (t) { return C.depthRaw(t) <= L.depth; };
+  nested = rng.shuffle(nested.filter(ok)); plain = rng.shuffle(plain.filter(ok)); pw = rng.shuffle(pw.filter(ok));
+  var count = Math.max(4, Math.min(6, n - 3)), items = [nested[0], pw[0]], seen = {};
+  items.forEach(function (t) { seen[C.fmtRaw(t)] = 1; });
+  var rest = rng.shuffle(nested.slice(1).concat(plain, pw.slice(1)));
+  for (var i = 0; i < rest.length && items.length < count; i++) {
+    var key = C.fmtRaw(rest[i]); if (seen[key]) continue; seen[key] = 1; items.push(rest[i]);
+  }
+  return { kind: 'card', env: {}, items: rng.shuffle(items).map(function (t) { return { term: t }; }) };
+}
+
+var BUILD = { 1: genEq, 2: genFlat, 3: genSg, 4: genNested, 5: genEmpty, 6: genPsub, 7: genPowerset, 8: genCard };
+var PROMPTS = {
+  truth: 'Какие утверждения верны? Отметьте верные.',
+  sg: 'Какие из множеств являются синглетонами? Отметьте их.',
+  powerset: 'Выпишите все элементы P(X), то есть все подмножества X. Порядок и повторы не важны.',
+  card: 'Найдите мощности множеств.'
+};
+function generate(o) {
+  var types = (o.types && o.types.length ? o.types : [1, 2, 3, 4, 5, 6, 7, 8]).map(Number).sort(function (a, b) { return a - b; });
+  var L = LEVELS[o.level] || LEVELS.medium, seed = String(o.seed == null ? '' : o.seed), idx = o.index || 0;
+  var nMin = Math.max(4, Math.min(12, o.nMin || 8)), nMax = Math.max(nMin, Math.min(12, o.nMax || 10));
+  var rng = makeRng(seed + '|' + idx + '|' + types.join(',') + '|' + L.id + '|' + nMin + '-' + nMax);
+  var type = o.cycle ? types[(xmur3(seed)() + idx) % types.length] : rng.pick(types);
+  var n = rng.range(nMin, nMax);
+  var task = BUILD[type](rng, L, n);
+  task.type = type;
+  task.title = TYPES[type - 1].name;
+  task.prompt = task.kind === 'truth' ? (task.sg ? PROMPTS.sg : PROMPTS.truth) : PROMPTS[task.kind];
+  task.seed = seed; task.index = idx; task.level = L.id;
+  return task;
+}
+
+/* ---------- автотесты генератора ---------- */
+function selfTest() {
+  var results = [];
+  function check(name, ok, detail) { results.push({ name: name, ok: !!ok, detail: ok ? '' : (detail || '') }); }
+  try {
+    var levels = ['easy', 'medium', 'hard'], problems = { ratio: null, trap: null, dup: null, depth: null, tag: null, eval: null, n: null, ps: null, card: null };
+    for (var t = 1; t <= 8; t++) {
+      var a = generate({ seed: 'det', index: 3, types: [t], level: 'medium' }), b = generate({ seed: 'det', index: 3, types: [t], level: 'medium' });
+      check('Генератор, тип ' + t + ': один seed — один вариант', JSON.stringify(a) === JSON.stringify(b), '');
+    }
+    var c1 = generate({ seed: 'x1', index: 0, types: [1, 2, 3, 4, 5, 6] }), c2 = generate({ seed: 'x2', index: 0, types: [1, 2, 3, 4, 5, 6] });
+    check('Генератор: разные seed дают разные варианты', JSON.stringify(c1) !== JSON.stringify(c2), '');
+    var blocks = 0;
+    for (var ty = 1; ty <= 8; ty++) levels.forEach(function (lv) {
+      for (var i = 0; i < 60; i++) {
+        var task = generate({ seed: 'prop' + i, index: i, types: [ty], level: lv, nMin: 8, nMax: 10 });
+        var label = 'тип ' + ty + ', ' + lv + ', seed prop' + i;
+        if (task.kind === 'truth') {
+          blocks++;
+          var n = task.items.length, tr = 0, keys = {}, traps = 0;
+          if ((n < 8 || n > 10) && !problems.n) problems.n = label + ': ' + n + ' утверждений';
+          task.items.forEach(function (it) {
+            var v;
+            try { v = C.evalStmt(it.st, task.env).value; } catch (e) { if (!problems.eval) problems.eval = label + ': ' + e.message; return; }
+            if (v) tr++;
+            var key = C.fmtStmt(it.st);
+            if (keys[key] && !problems.dup) problems.dup = label + ': ' + key;
+            keys[key] = 1;
+            if (it.trap) { traps++; if (!it.tag && !problems.tag) problems.tag = label + ': ' + key; }
+            if (C.depthStmt(it.st, task.env) > 3 && !problems.depth) problems.depth = label + ': ' + key;
+          });
+          if ((tr < 0.3 * n - 1e-9 || tr > 0.7 * n + 1e-9) && !problems.ratio) problems.ratio = label + ': верных ' + tr + ' из ' + n;
+          if (traps * 3 < n && !problems.trap) problems.trap = label + ': ловушек ' + traps + ' из ' + n;
+        } else if (task.kind === 'powerset') {
+          var X = C.value(task.X), lim = lv === 'hard' ? 4 : 3;
+          if ((X.els.length < 1 || X.els.length > lim || C.depthRaw(task.X) > 3) && !problems.ps) problems.ps = label + ': X = ' + C.fmtRaw(task.X);
+        } else {
+          task.items.forEach(function (it) { try { C.cardValue(it.term, {}); if (C.depthRaw(it.term) > 3) throw new Error('глубина'); } catch (e) { if (!problems.card) problems.card = label + ': ' + C.fmtRaw(it.term) + ' ' + e.message; } });
+        }
+      }
+    });
+    check('Генератор: число утверждений в заданных пределах', !problems.n, problems.n);
+    check('Генератор: верных утверждений от 30% до 70% (' + blocks + ' блоков)', !problems.ratio, problems.ratio);
+    check('Генератор: не меньше трети — парные ловушки', !problems.trap, problems.trap);
+    check('Генератор: у каждой ловушки есть тег', !problems.tag, problems.tag);
+    check('Генератор: без повторов утверждений', !problems.dup, problems.dup);
+    check('Генератор: глубина вложенности не больше 3', !problems.depth, problems.depth);
+    check('Генератор: все утверждения осмысленны (нет «a ⊆ X»)', !problems.eval, problems.eval);
+    check('Генератор: P(X) при |X| ≤ 3 (сложно ≤ 4)', !problems.ps, problems.ps);
+    check('Генератор: задачи на мощность вычислимы', !problems.card, problems.card);
+  } catch (e) { check('Генератор', false, 'исключение: ' + e.message); }
+  var failed = results.filter(function (r) { return !r.ok; });
+  return { passed: results.length - failed.length, failed: failed.length, total: results.length, results: results };
+}
+
+root.SetGen = { TYPES: TYPES, LEVELS: LEVELS, generate: generate, makeRng: makeRng, selfTest: selfTest };
+})(typeof window !== 'undefined' ? window : this);
+</script>
+
+<!-- ===================== ИНТЕРФЕЙС ===================== -->
+<script>
+(function () {
+'use strict';
+var C = window.SetCore, G = window.SetGen;
+var $ = function (id) { return document.getElementById(id); };
+function h(tag, attrs) {
+  var el = document.createElement(tag);
+  if (attrs) for (var k in attrs) {
+    var v = attrs[k];
+    if (v == null || v === false) continue;
+    if (k === 'class') el.className = v;
+    else if (k === 'text') el.textContent = v;
+    else if (k.slice(0, 2) === 'on') el.addEventListener(k.slice(2), v);
+    else el.setAttribute(k, v === true ? '' : v);
+  }
+  for (var i = 2; i < arguments.length; i++) add(el, arguments[i]);
+  return el;
+}
+function add(el, kid) {
+  if (kid == null || kid === false) return;
+  if (Array.isArray(kid)) { kid.forEach(function (k) { add(el, k); }); return; }
+  el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+}
+var store = {
+  get: function (k, d) { try { var v = localStorage.getItem('setsControl.' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set: function (k, v) { try { localStorage.setItem('setsControl.' + k, JSON.stringify(v)); } catch (e) { /* хранилище недоступно */ } }
+};
+function randomSeed() { var a = 'abcdefghjkmnpqrstuvwxyz23456789', s = ''; for (var i = 0; i < 6; i++) s += a[Math.floor(Math.random() * a.length)]; return s; }
+function cleanSeed(s) { return String(s || '').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 24); }
+
+/* ---------- тема ---------- */
+function applyTheme(t) {
+  if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+  else document.documentElement.removeAttribute('data-theme');
+  document.querySelectorAll('[data-theme-set]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.themeSet === (t || 'auto'))); });
+  store.set('theme', t || 'auto');
+}
+document.querySelectorAll('[data-theme-set]').forEach(function (b) { b.addEventListener('click', function () { applyTheme(b.dataset.themeSet); }); });
+applyTheme(store.get('theme', 'auto'));
+
+/* ---------- настройки ---------- */
+var settings = Object.assign({ types: [1, 2, 3, 4, 5, 6, 7, 8], level: 'medium', nMin: 8, nMax: 10, seed: randomSeed(), count: 6 }, store.get('settings', {}));
+settings.seed = cleanSeed(settings.seed) || randomSeed();
+function saveSettings() { store.set('settings', settings); }
+saveSettings();
+G.TYPES.forEach(function (t) {
+  var cb = h('input', { type: 'checkbox', id: 'type-' + t.id, value: t.id });
+  cb.checked = settings.types.indexOf(t.id) >= 0;
+  cb.addEventListener('change', function () {
+    var sel = G.TYPES.map(function (x) { return x.id; }).filter(function (id) { return $('type-' + id).checked; });
+    if (!sel.length) { cb.checked = true; return; }
+    settings.types = sel; settingsChanged();
+  });
+  $('types').append(h('label', { for: cb.id }, cb, h('span', null, t.id + '. ' + t.name)));
+});
+function syncLevel() { document.querySelectorAll('[data-level]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.level === settings.level)); }); }
+document.querySelectorAll('[data-level]').forEach(function (b) { b.addEventListener('click', function () { settings.level = b.dataset.level; syncLevel(); settingsChanged(); }); });
+syncLevel();
+$('nmin').value = settings.nMin; $('nmax').value = settings.nMax; $('seed').value = settings.seed; $('ccount').value = settings.count;
+function clampInt(v, a, b, d) { v = parseInt(v, 10); return isNaN(v) ? d : Math.max(a, Math.min(b, v)); }
+$('nmin').addEventListener('change', function () { settings.nMin = clampInt(this.value, 4, 12, 8); if (settings.nMax < settings.nMin) settings.nMax = settings.nMin; $('nmin').value = settings.nMin; $('nmax').value = settings.nMax; settingsChanged(); });
+$('nmax').addEventListener('change', function () { settings.nMax = clampInt(this.value, 4, 12, 10); if (settings.nMin > settings.nMax) settings.nMin = settings.nMax; $('nmin').value = settings.nMin; $('nmax').value = settings.nMax; settingsChanged(); });
+$('seed').addEventListener('change', function () { settings.seed = cleanSeed(this.value) || randomSeed(); this.value = settings.seed; settingsChanged(); });
+$('seed-new').addEventListener('click', function () { settings.seed = randomSeed(); $('seed').value = settings.seed; settingsChanged(); });
+$('ccount').addEventListener('change', function () { settings.count = clampInt(this.value, 1, 20, 6); this.value = settings.count; saveSettings(); buildControl(); });
+function settingsChanged() {
+  saveSettings();
+  buildControl();
+}
+function genOpts(index, cycle) { return { seed: settings.seed, index: index, types: settings.types, level: settings.level, nMin: settings.nMin, nMax: settings.nMax, cycle: cycle }; }
+
+/* ---------- панель символов ---------- */
+var KEYS_TERM = [['∅', '∅', 'пустое множество (ASCII: {} или 0)'], ['{', '{'], ['}', '}'], [',', ', ']];
+var KEYS_ALL = [['∈', ' ∈ ', 'принадлежит (ASCII: in)'], ['∉', ' ∉ ', 'не принадлежит (notin)'], ['⊆', ' ⊆ ', 'подмножество (sub)'], ['⊈', ' ⊈ ', 'не подмножество (nsub)'],
+  ['⊂', ' ⊂ ', 'собственное подмножество (psub)'], ['=', ' = ', 'равно'], ['≠', ' ≠ ', 'не равно (!=)']].concat(KEYS_TERM, [['P( )', 'P(', 'множество подмножеств'], [')', ')'], ['| |', '|', 'мощность']]);
+function insertAt(input, text) {
+  var a = input.selectionStart == null ? input.value.length : input.selectionStart, b = input.selectionEnd == null ? a : input.selectionEnd;
+  input.setRangeText(text, a, b, 'end');
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+  input.focus();
+}
+function keypad(input, keys) {
+  var box = h('div', { class: 'keys', role: 'group', 'aria-label': 'Символы' });
+  keys.forEach(function (k) {
+    var b = h('button', { type: 'button', class: 'key', title: k[2] || k[0], 'aria-label': k[2] || k[0] }, k[0]);
+    b.addEventListener('mousedown', function (e) { e.preventDefault(); });
+    b.addEventListener('click', function () { if (!input.disabled) insertAt(input, k[1]); });
+    box.append(b);
+  });
+  var clr = h('button', { type: 'button', class: 'key', title: 'Стереть символ слева', 'aria-label': 'Стереть символ слева' }, '⌫');
+  clr.addEventListener('mousedown', function (e) { e.preventDefault(); });
+  clr.addEventListener('click', function () {
+    if (input.disabled) return;
+    var a = input.selectionStart, b = input.selectionEnd;
+    if (a === b && a > 0) input.setRangeText('', a - 1, a, 'end'); else input.setRangeText('', a, b, 'end');
+    input.dispatchEvent(new Event('input', { bubbles: true })); input.focus();
+  });
+  box.append(clr);
+  return box;
+}
+function errorBlock(src, err) {
+  var pos = Math.max(0, Math.min(err.pos, src.length));
+  return [h('div', null, err.message), h('pre', { class: 'caret' }, src + '\n' + ' '.repeat(pos), h('b', null, '^'))];
+}
+
+/* ---------- виджеты задач ---------- */
+var uid = 0;
+function taskView(task, opts) {
+  opts = opts || {};
+  var id = 't' + (++uid);
+  var root = h('section', { class: 'task', 'aria-labelledby': id + '-h' });
+  root.append(h('header', { class: 'task-head' }, h('h3', { id: id + '-h' }, task.title || ''), task.meta ? h('span', { class: 'task-meta' }, task.meta) : null));
+  if (task.prompt) root.append(h('p', { class: 'prompt' }, task.prompt));
+  if (task.context) root.append(h('p', { class: 'context m' }, 'Дано: ' + task.context));
+  var impl = task.kind === 'truth' ? truthView(task, id) : task.kind === 'card' ? cardView(task, id) : powersetView(task, id, opts);
+  root.append(impl.el);
+  var sum = h('div', { class: 'task-summary', 'aria-live': 'polite' });
+  root.append(sum);
+  var view = {
+    el: root, task: task, checked: false,
+    check: function (force) {
+      var res = impl.check(force);
+      if (res.invalid) return res;
+      view.checked = true;
+      sum.replaceChildren(h('span', { class: 'pill ' + (res.correct === res.total ? 'ok' : 'err') },
+        res.correct === res.total ? 'Без ошибок' : (task.kind === 'powerset' ? 'Есть ошибки' : 'Верно ' + res.correct + ' из ' + res.total)));
+      return res;
+    },
+    toggle: impl.toggle || function () {},
+    focus: impl.focus || function () {},
+    reset: function () { impl.reset(); sum.replaceChildren(); view.checked = false; }
+  };
+  if (opts.selfCheck) {
+    var btn = h('button', { type: 'button', class: 'btn sm' }, 'Проверить');
+    var again = h('button', { type: 'button', class: 'btn sm quiet', hidden: true }, 'Решить заново');
+    btn.addEventListener('click', function () { var r = view.check(); if (!r.invalid) { btn.hidden = true; again.hidden = false; record(r, false); } });
+    again.addEventListener('click', function () { view.reset(); btn.hidden = false; again.hidden = true; view.focus(); });
+    root.append(h('div', { class: 'actions' }, btn, again));
+    view.onEnter = function () { if (!view.checked) btn.click(); };
+  }
+  return view;
+}
+function tagChip(tag) { return h('span', { class: 'tag', title: C.TAGS[tag].hint }, C.TAGS[tag].label); }
+
+function truthView(task, id) {
+  var list = h('ol', { class: 'claims' });
+  var rows = task.items.map(function (it, i) {
+    var cb = h('input', { type: 'checkbox', id: id + '-c' + i });
+    var text = it.st.kind === 'sg' ? C.fmtRaw(it.st.term) : C.fmtStmt(it.st);
+    var verdict = h('span', { class: 'verdict' }), fb = h('div', { class: 'fb' });
+    var li = h('li', { class: 'claim' }, h('span', { class: 'claim-n' }, (i + 1) + '.'), cb, h('label', { for: cb.id, class: 'm' }, text), verdict, fb);
+    list.append(li);
+    return { it: it, cb: cb, li: li, fb: fb, verdict: verdict };
+  });
+  return {
+    el: list,
+    check: function () {
+      var correct = 0, tags = [];
+      rows.forEach(function (r) {
+        var ex = C.explain(r.it.st, task.env);
+        r.cb.disabled = true;
+        if (ex.error) { r.fb.replaceChildren(h('p', null, ex.error)); return; }
+        var ok = ex.value === r.cb.checked, sgt = r.it.st.kind === 'sg';
+        r.li.classList.add(ok ? 'ok' : 'bad');
+        r.verdict.replaceChildren(h('span', { class: 'pill ' + (ok ? 'ok' : 'err') }, (ok ? '✓ ' : '✗ ') + (ex.value ? (sgt ? 'синглетон' : 'это верно') : (sgt ? 'не синглетон' : 'это неверно'))));
+        if (ok) { correct++; r.fb.replaceChildren(h('details', null, h('summary', null, 'почему'), h('p', null, ex.text))); }
+        else {
+          var tag = r.it.tag || C.inferTag(r.it.st, task.env);
+          tags.push(tag);
+          r.fb.replaceChildren(h('p', null, ex.text, ' ', tag !== 'other' ? tagChip(tag) : null));
+        }
+      });
+      return { total: rows.length, correct: correct, tags: tags };
+    },
+    reset: function () { rows.forEach(function (r) { r.cb.disabled = false; r.cb.checked = false; r.li.classList.remove('ok', 'bad'); r.verdict.replaceChildren(); r.fb.replaceChildren(); }); },
+    toggle: function (i) { var r = rows[i]; if (r && !r.cb.disabled) r.cb.checked = !r.cb.checked; },
+    focus: function () { if (rows[0]) rows[0].cb.focus(); }
+  };
+}
+
+function cardView(task, id) {
+  var list = h('ol', { class: 'cards' });
+  var rows = task.items.map(function (it, i) {
+    var inp = h('input', { type: 'text', inputmode: 'numeric', class: 'num', id: id + '-n' + i, autocomplete: 'off', 'aria-label': 'Ответ для ' + C.fmtRaw(it.term) });
+    var verdict = h('span', { class: 'verdict' }), fb = h('div', { class: 'fb' });
+    var li = h('li', { class: 'cardrow' }, h('span', { class: 'claim-n' }, (i + 1) + '.'), h('label', { for: inp.id, class: 'm' }, C.fmtRaw(it.term) + ' ='), inp, verdict, fb);
+    list.append(li);
+    return { it: it, inp: inp, li: li, fb: fb, verdict: verdict };
+  });
+  return {
+    el: list,
+    check: function () {
+      var correct = 0, tags = [];
+      rows.forEach(function (r) {
+        var want = C.cardValue(r.it.term, task.env), raw = r.inp.value.trim(), got = /^\d+$/.test(raw) ? Number(raw) : NaN;
+        var ok = got === want;
+        r.inp.disabled = true;
+        r.li.classList.add(ok ? 'ok' : 'bad');
+        r.verdict.replaceChildren(h('span', { class: 'pill ' + (ok ? 'ok' : 'err') }, (ok ? '✓ ' : '✗ ') + want));
+        var text = C.fmtRaw(r.it.term) + ' = ' + want + ': ' + C.explainCard(r.it.term, task.env);
+        if (ok) { correct++; r.fb.replaceChildren(h('details', null, h('summary', null, 'почему'), h('p', null, text))); }
+        else {
+          var tag = isNaN(got) ? 'other' : C.cardTag(r.it.term, task.env, got);
+          tags.push(tag);
+          r.fb.replaceChildren(h('p', null, (raw ? 'Ваш ответ: ' + raw + '. ' : 'Ответа нет. ') + text, ' ', tag !== 'other' ? tagChip(tag) : null));
+        }
+      });
+      return { total: rows.length, correct: correct, tags: tags };
+    },
+    reset: function () { rows.forEach(function (r) { r.inp.disabled = false; r.inp.value = ''; r.li.classList.remove('ok', 'bad'); r.verdict.replaceChildren(); r.fb.replaceChildren(); }); },
+    focus: function () { if (rows[0]) rows[0].inp.focus(); }
+  };
+}
+
+function powersetView(task, id, opts) {
+  var inp = h('input', { type: 'text', class: 'bigin', id: id + '-ps', spellcheck: 'false', autocomplete: 'off', placeholder: '{∅, {…}, …}', 'aria-label': 'P(X)' });
+  var preview = h('div', { class: 'preview', 'aria-live': 'polite' });
+  var report = h('div', { 'aria-live': 'polite' });
+  inp.addEventListener('input', function () {
+    var src = inp.value;
+    preview.classList.remove('err');
+    if (!src.trim()) { preview.replaceChildren('Можно вводить с клавиатуры: {} или 0 — это ∅.'); return; }
+    var r = C.checkPowerset(task.X, task.env, src);
+    if (r.syntax) { preview.classList.add('err'); preview.replaceChildren.apply(preview, errorBlock(src, r.syntax)); }
+    else preview.replaceChildren('Введено подмножеств-кандидатов: ' + (r.total - r.missing.length + r.extra.length) + (r.dups ? ' (повторы не считаются)' : ''));
+  });
+  inp.dispatchEvent(new Event('input'));
+  var el = h('div', { style: 'display:grid;gap:.5rem' }, h('p', { class: 'context m' }, 'X = ' + C.fmtRaw(task.X)), keypad(inp, KEYS_TERM), inp, preview, report);
+  return {
+    el: el,
+    check: function (force) {
+      var r = C.checkPowerset(task.X, task.env, inp.value);
+      if (r.syntax) {
+        if (!force) { inp.focus(); return { invalid: true }; }
+        inp.disabled = true;
+        report.replaceChildren(h('div', { class: 'report' }, h('b', null, 'Синтаксическая ошибка — ответ не засчитан.'), errorBlock(inp.value, r.syntax)));
+        return { total: 1, correct: 0, tags: [] };
+      }
+      inp.disabled = true;
+      var box = h('div', { class: 'report' + (r.ok ? ' ok' : '') });
+      if (r.ok) {
+        box.append(h('b', null, 'Верно: все ' + r.total + ' = 2^' + r.n + ' подмножеств.'));
+        if (r.dups) box.append(h('span', null, 'Повторы в вашей записи не считаются ошибкой.'));
+      } else {
+        var errs = r.missing.length + r.extra.length;
+        box.append(h('b', null, 'Ошибок: ' + errs + '. Пропущено подмножеств: ' + r.missing.length + '; лишних объектов: ' + r.extra.length + '.'));
+        box.append(h('span', null, 'Всего у X должно быть 2^' + r.n + ' = ' + r.total + ' ' + C.plural(r.total, 'подмножество', 'подмножества', 'подмножеств') + '.'));
+        if (r.extra.length) box.append(h('div', null, 'Не являются подмножествами X:', h('ul', null, r.extra.map(function (e) { return h('li', null, e.why); }))));
+        if (r.missing.length) {
+          var list = h('ul', { hidden: true }, r.missing.map(function (m) { return h('li', { class: 'm' }, C.fmtVal(m)); }));
+          var show = h('button', { type: 'button', class: 'btn sm quiet' }, 'Показать пропущенные');
+          show.addEventListener('click', function () { list.hidden = false; show.hidden = true; });
+          box.append(h('div', null, show, list));
+        }
+        if (r.tags.length) box.append(h('div', null, r.tags.filter(function (t) { return t !== 'other'; }).map(tagChip)));
+        if (r.dups) box.append(h('span', { class: 'hint' }, 'Повторы в записи ошибкой не считаются.'));
+      }
+      box.append(h('details', null, h('summary', null, 'Полный ответ'), h('p', { class: 'm' }, 'P(' + C.fmtRaw(task.X) + ') = ' + C.fmtVal(r.PX))));
+      report.replaceChildren(box);
+      return { total: 1, correct: r.ok ? 1 : 0, tags: r.tags };
+    },
+    reset: function () { inp.disabled = false; inp.value = ''; report.replaceChildren(); inp.dispatchEvent(new Event('input')); },
+    focus: function () { inp.focus(); },
+    input: inp
+  };
+}
+
+/* ---------- итоги ---------- */
+function record() {}
+function tagEntries(tags) { return Object.keys(tags).filter(function (t) { return tags[t] > 0 && C.TAGS[t]; }).sort(function (a, b) { return tags[b] - tags[a]; }); }
+function summaryCard(title, s) {
+  var keys = tagEntries(s.tags);
+  var box = h('div', { class: 'summary' }, h('h2', null, title),
+    h('p', null, 'Заданий: ' + s.tasks + '. Верных пунктов: ' + s.itemsOk + ' из ' + s.items + (s.items ? ' (' + Math.round(100 * s.itemsOk / s.items) + '%)' : '') + '.' + (s.best != null ? ' Лучшая серия: ' + s.best + '.' : '')));
+  if (!keys.length) box.append(h('p', null, 'Типичных ошибок нет.'));
+  else box.append(h('ul', null, keys.map(function (t) {
+    return h('li', null, h('b', null, C.TAGS[t].label + ' — ' + s.tags[t]), C.TAGS[t].hint ? h('div', { class: 'adv' }, C.TAGS[t].hint) : null);
+  })));
+  return box;
+}
+/* ---------- контрольная ---------- */
+var ctl = { tasks: [], views: [], submitted: false };
+function buildControl() {
+  ctl.tasks = []; ctl.submitted = false;
+  for (var i = 0; i < settings.count; i++) {
+    var t = G.generate(genOpts(i, true));
+    t.title = 'Задание ' + (i + 1) + '. ' + t.title;
+    ctl.tasks.push(t);
+  }
+  ctl.views = ctl.tasks.map(function (t) { return taskView(t); });
+  $('ctl-list').replaceChildren.apply($('ctl-list'), ctl.views.map(function (v) { return v.el; }));
+  $('ctl-result').hidden = true;
+  $('ctl-submit').disabled = false;
+  $('ctl-print-head').textContent = 'Контрольная: элементы, подмножества, P(X), |X|. Вариант ' + settings.seed + '. Фамилия, имя: ______________________';
+}
+$('ctl-new').addEventListener('click', function () { settings.seed = randomSeed(); $('seed').value = settings.seed; saveSettings(); buildControl(); });
+$('ctl-submit').addEventListener('click', function () {
+  if (ctl.submitted) return;
+  ctl.submitted = true; $('ctl-submit').disabled = true;
+  var s = { tags: {}, tasks: 0, items: 0, itemsOk: 0, perfect: 0 };
+  ctl.views.forEach(function (v) {
+    var r = v.check(true);
+    s.tasks++; s.items += r.total; s.itemsOk += r.correct; if (r.correct === r.total) s.perfect++;
+    r.tags.forEach(function (t) { s.tags[t] = (s.tags[t] || 0) + 1; });
+  });
+  var box = $('ctl-result');
+  box.replaceChildren(summaryCard('Результат: без ошибок ' + s.perfect + ' из ' + s.tasks + ' заданий', s));
+  box.hidden = false; box.scrollIntoView({ block: 'nearest' });
+});
+$('ctl-print').addEventListener('click', function () { window.print(); });
+
+/* ---------- LaTeX ---------- */
+var TEX_PREAMBLE = String.raw`\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[russian]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=2cm]{geometry}
+% Условие: \answersfalse. Лист ответов: \answerstrue.
+\newif\ifanswers
+@@FLAG@@
+% В блоках claims верные пункты помечены \item[v]: в условии пометка не видна,
+% в листе ответов рядом с номером появляется галочка.
+\def\claimv{v}
+\newenvironment{claims}{%
+  \begin{enumerate}\renewcommand{\labelenumii}{\arabic{enumii})}%
+  \let\claimorigitem\item
+  \renewcommand{\item}[1][]{\def\claimarg{##1}%
+    \ifanswers\ifx\claimarg\claimv\refstepcounter{enumii}\claimorigitem[\llap{$\checkmark$\ }\labelenumii]\else\claimorigitem\fi
+    \else\claimorigitem\fi}}%
+  {\end{enumerate}}
+\newcommand{\ans}[1]{\ifanswers#1\fi}
+\newcommand{\answer}[1]{\ifanswers\par\smallskip\textit{Ответ:} #1\fi}
+`;
+function latexBody() {
+  var L = [];
+  L.push('\\begin{document}');
+  L.push('\\section*{Элементы, подмножества, $P(X)$, $|X|$\\ifanswers{} --- ответы\\fi}');
+  L.push('Вариант: \\texttt{' + settings.seed.replace(/_/g, '\\_') + '}\\ifanswers\\else\\hfill Фамилия, имя: \\rule{7cm}{0.4pt}\\fi');
+  L.push('');
+  L.push('\\begin{enumerate}');
+  ctl.tasks.forEach(function (t) {
+    if (t.kind === 'truth') {
+      var ctx = t.context ? ' Пусть $' + Object.keys(t.env).map(function (k) { return k + ' = ' + C.texRaw(t.env[k]); }).join(',\\ ') + '$.' : '';
+      L.push('\\item' + ctx + ' ' + (t.sg ? 'Какие из множеств являются синглетонами?' : 'Какие утверждения верны?'));
+      L.push('  \\begin{claims}');
+      t.items.forEach(function (it) { L.push('  \\item' + (C.evalStmt(it.st, t.env).value ? '[v]' : '') + ' ' + C.texStmt(it.st)); });
+      L.push('  \\end{claims}');
+    } else if (t.kind === 'powerset') {
+      var PX = C.value({ t: 'P', arg: t.X }, t.env);
+      L.push('\\item Выпишите все элементы $P(X)$ для $X = ' + C.texRaw(t.X) + '$.');
+      L.push('  \\answer{$P(X) = ' + C.texRaw(PX) + '$}');
+    } else {
+      L.push('\\item Найдите мощности множеств.');
+      L.push('  \\begin{enumerate}\\renewcommand{\\labelenumii}{\\arabic{enumii})}');
+      t.items.forEach(function (it) { L.push('  \\item $' + C.texRaw(it.term) + '$\\ans{ $= ' + C.cardValue(it.term, t.env) + '$}'); });
+      L.push('  \\end{enumerate}');
+    }
+    L.push('');
+  });
+  L.push('\\end{enumerate}');
+  L.push('\\end{document}');
+  return L.join('\n');
+}
+var texState = { which: 'q' };
+function texText() { return TEX_PREAMBLE.replace('@@FLAG@@', texState.which === 'a' ? '\\answerstrue' : '\\answersfalse') + '\n' + latexBody() + '\n'; }
+function renderTex() {
+  $('tex-text').value = texText();
+  document.querySelectorAll('[data-tex]').forEach(function (b) { b.setAttribute('aria-selected', String(b.dataset.tex === texState.which)); });
+  $('tex-msg').textContent = '';
+}
+$('ctl-tex').addEventListener('click', function () { renderTex(); var d = $('tex-dialog'); if (d.showModal) d.showModal(); else d.setAttribute('open', ''); });
+$('tex-close').addEventListener('click', function () { $('tex-dialog').close(); });
+document.querySelectorAll('[data-tex]').forEach(function (b) { b.addEventListener('click', function () { texState.which = b.dataset.tex; renderTex(); }); });
+$('tex-copy').addEventListener('click', function () {
+  var ta = $('tex-text');
+  function fallback() { ta.focus(); ta.select(); $('tex-msg').textContent = 'Текст выделен — нажмите Ctrl+C (⌘C).'; }
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value).then(function () { $('tex-msg').textContent = 'Скопировано.'; }, fallback);
+  else fallback();
+});
+$('tex-dl').addEventListener('click', function () {
+  var blob = new Blob([texText()], { type: 'application/x-tex;charset=utf-8' });
+  var a = h('a', { href: URL.createObjectURL(blob), download: 'sets-' + settings.seed + (texState.which === 'a' ? '-answers' : '') + '.tex' });
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+  $('tex-msg').textContent = 'Файл сохранён.';
+});
+
+/* ---------- самопроверка ---------- */
+function runSelfTest() {
+  var a = C.selfTest(), b = G.selfTest(), all = a.results.concat(b.results);
+  var passed = a.passed + b.passed, total = a.total + b.total;
+  var out = $('selftest-out');
+  out.replaceChildren(
+    h('b', { class: passed === total ? 'pass' : 'fail' }, 'Пройдено ' + passed + ' из ' + total + (passed === total ? '.' : '. Есть ошибки!')),
+    h('ol', null, all.map(function (r) { return h('li', { class: r.ok ? 'pass' : 'fail' }, (r.ok ? '✓ ' : '✗ ') + r.name + (r.detail ? ' — ' + r.detail : '')); })));
+  out.hidden = false;
+  return { passed: passed, total: total, results: all };
+}
+$('selftest-run').addEventListener('click', runSelfTest);
+window.runSelfTest = runSelfTest;
+
+buildControl();
+})();
+</script>
+</body>
+</html>
